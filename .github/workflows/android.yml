@@ -27,16 +27,24 @@ jobs:
   build:
     name: Build App
     runs-on: ubuntu-latest
+    env:
+      # Release builds are signed with the Fincord maintainer's key and never an Accord/Akane or
+      # debug key. Without those secrets (every pull request, and the repository until they are
+      # added) the workflow builds a debug APK instead of a release that would refuse to install.
+      HAS_RELEASE_SIGNING: ${{ secrets.FINCORD_RELEASE_KEYSTORE != '' }}
     steps:
 
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          # Cupertino and libPhonograph are submodules and nothing compiles without them.
+          submodules: recursive
 
-      - name: Set up JDK 17
+      # 21: hificore targets Java 21. The runner image also carries the JDK 17 the app toolchain uses.
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
 
       - name: Setup Gradle
@@ -46,26 +54,31 @@ jobs:
         run: echo releaseType=CI > package.properties
 
       - name: Create signing files
-        if: github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip_signing_apk]')
+        if: github.event_name == 'push' && env.HAS_RELEASE_SIGNING == 'true' && !contains(github.event.head_commit.message, '[skip_signing_apk]')
         run: |
           mkdir -p ~/.gradle
-          echo "${{ secrets.KEYSTORE_SECRET }}" | base64 -d > ~/key.jks
-          echo "AKANE_RELEASE_STORE_FILE=$(realpath ~/key.jks)" > ~/.gradle/gradle.properties
-          echo "AKANE_RELEASE_STORE_PASSWORD=${{ secrets.KEYSTORE_PWD }}" >> ~/.gradle/gradle.properties
-          echo "AKANE_RELEASE_KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> ~/.gradle/gradle.properties
-          echo "AKANE_RELEASE_KEY_PASSWORD=${{ secrets.KEY_PWD }}" >> ~/.gradle/gradle.properties
+          echo "${{ secrets.FINCORD_RELEASE_KEYSTORE }}" | base64 -d > ~/fincord-release.jks
+          echo "FINCORD_RELEASE_STORE_FILE=$(realpath ~/fincord-release.jks)" > ~/.gradle/gradle.properties
+          echo "FINCORD_RELEASE_STORE_PASSWORD=${{ secrets.FINCORD_RELEASE_STORE_PASSWORD }}" >> ~/.gradle/gradle.properties
+          echo "FINCORD_RELEASE_KEY_ALIAS=${{ secrets.FINCORD_RELEASE_KEY_ALIAS }}" >> ~/.gradle/gradle.properties
+          echo "FINCORD_RELEASE_KEY_PASSWORD=${{ secrets.FINCORD_RELEASE_KEY_PASSWORD }}" >> ~/.gradle/gradle.properties
+          echo "BUILD_VARIANT=release" >> $GITHUB_ENV
 
       - name: Build with Gradle
-        run: ./gradlew :app:assembleRelease
+        run: |
+          VARIANT="${BUILD_VARIANT:-debug}"
+          echo "BUILD_VARIANT=$VARIANT" >> $GITHUB_ENV
+          ./gradlew ":app:assemble${VARIANT^}"
 
       - name: Find apk
         run: |
-          echo "APK_FILE_X64=$(find app/build/outputs/apk/release -name '*-x86_64-*.apk')" >> $GITHUB_ENV
-          echo "APK_FILE_ARM64=$(find app/build/outputs/apk/release -name '*-arm64-v8a-*.apk')" >> $GITHUB_ENV
-          echo "APK_FILE_UNIVERSAL=$(find app/build/outputs/apk/release -name '*-universal-*.apk')" >> $GITHUB_ENV
+          OUT=app/build/outputs/apk/$BUILD_VARIANT
+          echo "APK_FILE_X64=$(find $OUT -name '*-x86_64-*.apk')" >> $GITHUB_ENV
+          echo "APK_FILE_ARM64=$(find $OUT -name '*-arm64-v8a-*.apk')" >> $GITHUB_ENV
+          echo "APK_FILE_UNIVERSAL=$(find $OUT -name '*-universal-*.apk')" >> $GITHUB_ENV
           GIT_COMMIT_HASH=$(git rev-parse --short HEAD)
-          ACCORD_VERSION=$(grep "versionName" app/build.gradle.kts | awk -F'"' '{print $2}' | head -n 1)
-          APK_FILE_NAME=Accord-$ACCORD_VERSION-$GIT_COMMIT_HASH
+          FINCORD_VERSION=$(grep "versionName" app/build.gradle.kts | awk -F'"' '{print $2}' | head -n 1)
+          APK_FILE_NAME=Fincord-$FINCORD_VERSION-$GIT_COMMIT_HASH-$BUILD_VARIANT
           echo "APK_FILE_NAME_X64=$APK_FILE_NAME-x86_64" >> $GITHUB_ENV
           echo "APK_FILE_NAME_ARM64=$APK_FILE_NAME-arm64-v8a" >> $GITHUB_ENV
           echo "APK_FILE_NAME_UNIVERSAL=$APK_FILE_NAME-universal" >> $GITHUB_ENV
