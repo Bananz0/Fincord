@@ -63,7 +63,7 @@ class AccordMediaItemConverter : MediaItemConverter {
     }
 
     private fun MediaItem.toMediaInfo(): MediaInfo {
-        val url = localConfiguration?.uri?.toString().orEmpty()
+        val url = receiverUrl()
         val metadata = CastMetadata(CastMetadata.MEDIA_TYPE_MUSIC_TRACK).apply {
             mediaMetadata.title?.let { putString(CastMetadata.KEY_TITLE, it.toString()) }
             mediaMetadata.artist?.let { putString(CastMetadata.KEY_ARTIST, it.toString()) }
@@ -90,7 +90,7 @@ class AccordMediaItemConverter : MediaItemConverter {
 
     private fun MediaItem.toCustomData(): JSONObject = JSONObject().apply {
         put(KEY_MEDIA_ID, mediaId)
-        put(KEY_URI, localConfiguration?.uri?.toString())
+        put(KEY_URI, receiverUrl())
         put(KEY_TITLE, mediaMetadata.title?.toString())
         put(KEY_ARTIST, mediaMetadata.artist?.toString())
         put(KEY_ALBUM, mediaMetadata.albumTitle?.toString())
@@ -153,6 +153,19 @@ class AccordMediaItemConverter : MediaItemConverter {
         takeIf { it.has(key) && !it.isNull(key) }?.getLong(key)
 
     private fun String.toUri(): Uri = Uri.parse(this)
+
+    /**
+     * The URL the receiver fetches: a [CastGrants] grant when the server issues them.
+     *
+     * The queue code only converts items whose grant is ready, so the stripped fallback is reached
+     * only by a caller that skipped that check - and for it an unplayable URL is the right failure,
+     * where the credentialed one would publish the user's token to every joined sender.
+     */
+    private fun MediaItem.receiverUrl(): String =
+        when (val receiver = CastGrants.receiverUrl(this)) {
+            is CastGrants.ReceiverUrl.Ready -> receiver.url
+            else -> CastGrants.withoutCredentials(localConfiguration?.uri?.toString().orEmpty())
+        }
 
     /** Mirrors the receiver's `entity`: the stable id every other Fincord surface keys on. */
     private fun MediaItem.identity(): String =

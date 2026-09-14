@@ -1,6 +1,7 @@
 package uk.akane.accord.logic.player
 
 import android.os.Looper
+import android.os.Handler
 import android.os.SystemClock
 import android.util.Log
 import androidx.media3.cast.MediaItemConverter
@@ -20,6 +21,7 @@ import com.google.android.gms.cast.framework.media.RemoteMediaClient
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import kotlin.math.abs
+import uk.akane.accord.logic.cast.CastGrants
 
 /**
  * Presents the phone's complete, named queue while a Cast receiver does the playing.
@@ -43,6 +45,8 @@ class CastQueuePlayer(
     private val converter: MediaItemConverter,
 ) : SimpleBasePlayer(looper) {
 
+    private val handler = Handler(looper)
+
     private var client: RemoteMediaClient? = null
     private var mediaQueue: MediaQueue? = null
 
@@ -56,12 +60,25 @@ class CastQueuePlayer(
     /** Pins MediaSession to the requested item while status still describes the replaced queue. */
     private var pendingLoad: PendingLoad? = null
 
+    /** A handoff waiting for a receiver-safe URL, before anything has been sent to Cast. */
+    private var pendingGrantLoad: PendingGrantLoad? = null
+
     /** Keeps an in-queue jump on its target until the receiver reports that item as current. */
     private var pendingJump: PendingJump? = null
     private var pendingSeek: PendingSeek? = null
     private var lastReceiverLocalIndex = 0
     private var lastReceiverPlayWhenReady = false
     private var progressMs = 0L
+
+    /**
+     * Work parked while Cast grants are fetched checks one of these on return and stands down if
+     * something newer has happened meanwhile. Two, because they supersede different things: a newer
+     * load replaces an older one, but an edit - autoplay appending tracks, say - must not cancel a
+     * handoff that is waiting for its grants. It only invalidates an insert computed against the
+     * indices the edit has just moved.
+     */
+    private var loadGeneration = 0
+    private var sessionGeneration = 0
     /** Cast reports BUFFERING for an in-track seek even though audio never becomes paused. */
     private var maskSeekBufferingUntilMs = 0L
 
@@ -76,6 +93,7 @@ class CastQueuePlayer(
             // A restored local queue and a resumed Cast session race each other on a cold start.
             // Whichever arrives second must get another chance to establish the ID mapping.
             if (receiverLocalIndices.isEmpty()) adoptExistingQueueIfPossible()
+            if (client != null) prefetchGrants()
             invalidateState()
         }
     }
@@ -114,8 +132,11 @@ class CastQueuePlayer(
     fun attach(remoteMediaClient: RemoteMediaClient) {
         if (client === remoteMediaClient) return
         detachClient()
+        sessionGeneration++
+        loadGeneration++
         receiverLocalIndices.clear()
         nextLocalToEnqueue = 0
+        appendInFlight = false
         client = remoteMediaClient
         mediaQueue = remoteMediaClient.mediaQueue.also {
             it.setCacheCapacity(CAST_QUEUE_BATCH_SIZE * 2)
@@ -131,6 +152,9 @@ class CastQueuePlayer(
     /** Stops using SDK objects whose documented lifetime ends with their Cast session. */
     fun detach() {
         detachClient()
+        sessionGeneration++
+        loadGeneration++
+        pendingGrantLoad = null
         pendingLoad = null
         pendingJump = null
         pendingSeek = null
@@ -151,16 +175,17 @@ class CastQueuePlayer(
         val queue = localQueue()
         val index = currentLocalIndex(queue)
         val load = pendingLoad
+        val grantLoad = pendingGrantLoad
         return State.Builder()
             .setAvailableCommands(AVAILABLE_COMMANDS)
             .setPlayWhenReady(
-                load?.playWhenReady ?: remote.playWhenReady,
+                grantLoad?.playWhenReady ?: load?.playWhenReady ?: remote.playWhenReady,
                 Player.PLAY_WHEN_READY_CHANGE_REASON_REMOTE,
             )
             .setPlaybackState(
                 when {
                     queue.isEmpty() -> Player.STATE_IDLE
-                    load != null -> Player.STATE_BUFFERING
+                    grantLoad != null || load != null -> Player.STATE_BUFFERING
                     remote.playWhenReady &&
                         remote.playbackState == Player.STATE_BUFFERING &&
                         SystemClock.elapsedRealtime() < maskSeekBufferingUntilMs ->
@@ -171,9 +196,12 @@ class CastQueuePlayer(
             .setPlaylist(queue.mapIndexed { position, item ->
                 item.toItemData(position, position == index)
             })
-            .setCurrentMediaItemIndex(index)
+            .setCurrentMediaItemIndex(
+                grantLoad?.let { resolveTarget(queue, it.target) }?.takeIf { it >= 0 } ?: index,
+            )
             .setContentPositionMs {
-                pendingLoad?.positionMs ?: pendingJump?.positionMs ?: pendingSeek?.positionMs
+                pendingGrantLoad?.positionMs ?: pendingLoad?.positionMs
+                ?: pendingJump?.positionMs ?: pendingSeek?.positionMs
                 ?: progressMs
             }
             .setContentBufferedPositionMs { remote.bufferedPosition.coerceAtLeast(progressMs) }
@@ -190,6 +218,12 @@ class CastQueuePlayer(
         val timeline = local.currentTimeline
         val window = Timeline.Window()
         return (0 until timeline.windowCount).map { timeline.getWindow(it, window).mediaItem }
+    }
+
+    private fun resolveTarget(queue: List<MediaItem>, target: QueueTarget): Int {
+        queue.indexOfFirst { it === target.item }.takeIf { it >= 0 }?.let { return it }
+        return queue.indices.filter { queue[it].mediaId == target.mediaId }
+            .getOrNull(target.occurrence) ?: -1
     }
 
     /** Resolves the receiver's persistent queue item ID into the phone's authoritative timeline. */
@@ -258,15 +292,74 @@ class CastQueuePlayer(
         return C.TIME_UNSET
     }
 
-    /** Loads the current item and the next batch as one Cast continuation request. */
-    private fun loadQueueFrom(startIndex: Int, positionMs: Long, playWhenReady: Boolean) {
-        val castClient = client ?: return
+    /** Starts or supersedes a load, parking it until receiver-safe URLs are available. */
+    private fun loadQueueFrom(
+        startIndex: Int,
+        positionMs: Long,
+        playWhenReady: Boolean,
+    ) {
         val queue = localQueue()
         if (queue.isEmpty()) return
         val requested = startIndex.coerceIn(queue.indices)
+        val item = queue[requested]
+        val target = QueueTarget(
+            item = item,
+            mediaId = item.mediaId,
+            occurrence = queue.take(requested + 1).count { it.mediaId == item.mediaId } - 1,
+        )
+        val pending = PendingGrantLoad(
+            target = target,
+            positionMs = positionMs.coerceAtLeast(0L),
+            playWhenReady = playWhenReady,
+            generation = ++loadGeneration,
+            session = sessionGeneration,
+        )
+        pendingGrantLoad = pending
+        resumeGrantLoad(pending)
+        invalidateState()
+    }
+
+    private fun resumeGrantLoad(pending: PendingGrantLoad) {
+        if (pendingGrantLoad !== pending || pending.generation != loadGeneration ||
+            pending.session != sessionGeneration || client == null) return
+        val queue = localQueue()
+        val requested = resolveTarget(queue, pending.target)
+        if (requested < 0) {
+            Log.w(TAG, "${pending.target.mediaId} left the queue while fetching grants; not loading")
+            pendingGrantLoad = null
+            invalidateState()
+            return
+        }
+        val upcoming = queue.subList(
+            requested,
+            (requested + CAST_QUEUE_BATCH_SIZE).coerceAtMost(queue.size),
+        )
+        if (CastGrants.needsGrants(upcoming)) {
+            if (!CastGrants.mayRequest()) {
+                handler.postDelayed({ resumeGrantLoad(pending) }, GRANT_RETRY_MS)
+                return
+            }
+            Log.d(TAG, "fetching Cast grants before loading ${queue[requested].description(requested)}")
+            CastGrants.fetch(upcoming) { resumeGrantLoad(pending) }
+            return
+        }
+        pendingGrantLoad = null
+        performLoad(queue, requested, pending)
+    }
+
+    /** Loads the current item and the next batch as one Cast continuation request. */
+    private fun performLoad(queue: List<MediaItem>, requested: Int, request: PendingGrantLoad) {
+        val castClient = client ?: return
+        if (request.generation != loadGeneration || request.session != sessionGeneration) return
         val batch = castableBatch(queue, requested)
         if (batch.items.isEmpty() || batch.localIndices.firstOrNull() != requested) {
-            Log.e(TAG, "cannot cast ${queue[requested].description(requested)}: no receiver URL")
+            val reason =
+                if (CastGrants.receiverUrl(queue[requested]) == CastGrants.ReceiverUrl.AwaitingGrant) {
+                    "the server did not grant a stream URL"
+                } else {
+                    "no receiver URL"
+                }
+            Log.e(TAG, "cannot cast ${queue[requested].description(requested)}: $reason")
             return
         }
 
@@ -277,8 +370,8 @@ class CastQueuePlayer(
         pendingJump = null
         pendingSeek = null
         lastReceiverLocalIndex = requested
-        lastReceiverPlayWhenReady = playWhenReady
-        progressMs = positionMs.coerceAtLeast(0L)
+        lastReceiverPlayWhenReady = request.playWhenReady
+        progressMs = request.positionMs
         val first = batch.items.first()
         val firstInfo = first.media
         pendingLoad = PendingLoad(
@@ -288,7 +381,7 @@ class CastQueuePlayer(
             entity = firstInfo?.entity,
             contentId = firstInfo?.contentId,
             positionMs = progressMs,
-            playWhenReady = playWhenReady,
+            playWhenReady = request.playWhenReady,
         )
         Log.d(
             TAG,
@@ -302,6 +395,8 @@ class CastQueuePlayer(
             progressMs,
             null,
         ).setResultCallback { result ->
+            if (request.generation != loadGeneration || request.session != sessionGeneration ||
+                client !== castClient) return@setResultCallback
             if (!result.status.isSuccess) {
                 Log.e(TAG, "queueLoad failed: ${result.status.statusCode} ${result.status.statusMessage}")
                 pendingLoad = null
@@ -309,7 +404,7 @@ class CastQueuePlayer(
                 return@setResultCallback
             }
             Log.d(TAG, "queueLoad accepted; waiting for receiver item IDs")
-            if (!playWhenReady) castClient.pause()
+            if (!request.playWhenReady) castClient.pause()
             castClient.requestStatus()
         }
         invalidateState()
@@ -321,11 +416,16 @@ class CastQueuePlayer(
         var index = fromIndex.coerceAtLeast(0)
         while (index < queue.size && castItems.size < CAST_QUEUE_BATCH_SIZE) {
             val item = queue[index]
-            if (!item.localConfiguration?.uri?.toString().isNullOrBlank()) {
-                castItems += converter.toMediaQueueItem(item)
-                localIndices += index
-            } else {
-                Log.w(TAG, "skipping uncastable ${item.description(index)}")
+            when (CastGrants.receiverUrl(item)) {
+                is CastGrants.ReceiverUrl.Ready -> {
+                    castItems += converter.toMediaQueueItem(item)
+                    localIndices += index
+                }
+                // Stop rather than skip: a skipped item is never offered to the receiver again, and
+                // this one only needs its grant. The batch resumes from here once it has one.
+                CastGrants.ReceiverUrl.AwaitingGrant -> break
+                CastGrants.ReceiverUrl.Uncastable ->
+                    Log.w(TAG, "skipping uncastable ${item.description(index)}")
             }
             index++
         }
@@ -344,12 +444,31 @@ class CastQueuePlayer(
             ?: return
         if (receiverIndex < 0 || castQueue.itemCount - receiverIndex > QUEUE_LOW_WATER) return
 
+        val upcoming = queue.subList(
+            nextLocalToEnqueue,
+            (nextLocalToEnqueue + CAST_QUEUE_BATCH_SIZE).coerceAtMost(queue.size),
+        )
+        if (CastGrants.needsGrants(upcoming)) {
+            // Asked again on a later progress tick if this fails; mayRequest spaces those out.
+            if (!CastGrants.mayRequest()) return
+            appendInFlight = true
+            val session = sessionGeneration
+            CastGrants.fetch(upcoming) {
+                if (session != sessionGeneration || client !== castClient) return@fetch
+                // Recomputed from whatever the queue is by now, so an edit made meanwhile is safe.
+                appendInFlight = false
+                maybeAppendQueue()
+            }
+            return
+        }
+
         val batch = castableBatch(queue, nextLocalToEnqueue)
         if (batch.items.isEmpty()) {
             nextLocalToEnqueue = batch.nextLocalIndex
             return
         }
         appendInFlight = true
+        val session = sessionGeneration
         Log.d(
             TAG,
             "queueInsertItems ${batch.items.size} after ${receiverLocalIndices.lastOrNull()}, " +
@@ -360,6 +479,7 @@ class CastQueuePlayer(
             MediaQueueItem.INVALID_ITEM_ID,
             null,
         ).setResultCallback { result ->
+            if (session != sessionGeneration || client !== castClient) return@setResultCallback
             appendInFlight = false
             if (result.status.isSuccess) {
                 receiverLocalIndices.addAll(batch.localIndices)
@@ -429,10 +549,14 @@ class CastQueuePlayer(
 
     /** Last receiver state that still had an active queue item; safe after teardown has started. */
     fun handoffSnapshot(): HandoffSnapshot = HandoffSnapshot(
-        mediaItemIndex = pendingLoad?.localIndex ?: pendingJump?.localIndex ?: lastReceiverLocalIndex,
-        positionMs = pendingLoad?.positionMs ?: pendingJump?.positionMs ?: pendingSeek?.positionMs
+        mediaItemIndex = pendingGrantLoad?.let { resolveTarget(localQueue(), it.target) }
+            ?.takeIf { it >= 0 } ?: pendingLoad?.localIndex ?: pendingJump?.localIndex
+            ?: lastReceiverLocalIndex,
+        positionMs = pendingGrantLoad?.positionMs ?: pendingLoad?.positionMs
+            ?: pendingJump?.positionMs ?: pendingSeek?.positionMs
             ?: progressMs,
-        playWhenReady = pendingLoad?.playWhenReady ?: lastReceiverPlayWhenReady,
+        playWhenReady = pendingGrantLoad?.playWhenReady ?: pendingLoad?.playWhenReady
+            ?: lastReceiverPlayWhenReady,
     )
 
     private fun acceptReceiverPosition(positionMs: Long) {
@@ -452,6 +576,10 @@ class CastQueuePlayer(
     }
 
     override fun handleSetPlayWhenReady(playWhenReady: Boolean): ListenableFuture<*> {
+        pendingGrantLoad?.copy(playWhenReady = playWhenReady)?.let {
+            pendingGrantLoad = it
+            resumeGrantLoad(it)
+        }
         pendingLoad = pendingLoad?.copy(playWhenReady = playWhenReady)
         lastReceiverPlayWhenReady = playWhenReady
         if (playWhenReady) client?.play() else client?.pause()
@@ -464,11 +592,19 @@ class CastQueuePlayer(
     }
 
     override fun handleStop(): ListenableFuture<*> {
+        loadGeneration++
+        pendingGrantLoad = null
+        pendingLoad = null
+        lastReceiverPlayWhenReady = false
         client?.stop()
+        invalidateState()
         return Futures.immediateVoidFuture()
     }
 
     override fun handleRelease(): ListenableFuture<*> {
+        sessionGeneration++
+        loadGeneration++
+        pendingGrantLoad = null
         detachClient()
         remote.removeListener(remoteListener)
         local.removeListener(localListener)
@@ -491,6 +627,10 @@ class CastQueuePlayer(
         }
         if (target !in queue.indices) return Futures.immediateVoidFuture()
         val requestedPosition = if (positionMs == C.TIME_UNSET) 0L else positionMs.coerceAtLeast(0L)
+        pendingGrantLoad?.let {
+            loadQueueFrom(target, requestedPosition, it.playWhenReady)
+            return Futures.immediateVoidFuture()
+        }
         val seekWithinCurrent = target == current &&
             seekCommand != Player.COMMAND_SEEK_TO_NEXT &&
             seekCommand != Player.COMMAND_SEEK_TO_PREVIOUS
@@ -564,27 +704,98 @@ class CastQueuePlayer(
     }
 
     override fun handleAddMediaItems(index: Int, mediaItems: List<MediaItem>): ListenableFuture<*> {
-        val castClient = client
-        val castQueue = mediaQueue
-        val receiverIndex = receiverLocalIndices.indexOfFirst { it >= index }
         local.addMediaItems(index, mediaItems)
         for (i in receiverLocalIndices.indices) {
             if (receiverLocalIndices[i] >= index) receiverLocalIndices[i] += mediaItems.size
         }
         if (index < nextLocalToEnqueue) nextLocalToEnqueue += mediaItems.size
-
-        if (castClient != null && castQueue != null && receiverIndex >= 0) {
-            val castableIndexes = mediaItems.indices.filter {
-                !mediaItems[it].localConfiguration?.uri?.toString().isNullOrBlank()
-            }
-            val items = castableIndexes.map { converter.toMediaQueueItem(mediaItems[it]) }
-            if (items.isNotEmpty()) {
-                val beforeId = castQueue.itemIdAtIndex(receiverIndex)
-                castClient.queueInsertItems(items.toTypedArray(), beforeId, null)
-                receiverLocalIndices.addAll(receiverIndex, castableIndexes.map { index + it })
-            }
+        if (client != null && receiverLocalIndices.any { it >= index }) {
+            insertWhenReady(mediaItems, sessionGeneration)
         }
         return Futures.immediateVoidFuture()
+    }
+
+    private fun insertWhenReady(mediaItems: List<MediaItem>, session: Int) {
+        if (session != sessionGeneration || client == null) return
+        val queue = localQueue()
+        val present = resolveOccurrences(queue, mediaItems)
+        if (present.isEmpty()) return
+        val presentItems = present.map { it.second }
+        if (CastGrants.needsGrants(presentItems)) {
+            if (!CastGrants.mayRequest()) {
+                handler.postDelayed({ insertWhenReady(mediaItems, session) }, GRANT_RETRY_MS)
+            } else {
+                CastGrants.fetch(presentItems) { insertWhenReady(mediaItems, session) }
+            }
+            return
+        }
+        insertOnReceiver(present)
+    }
+
+    /** Resolves the actual objects first, so equal duplicate songs retain their queue occurrence. */
+    private fun resolveOccurrences(
+        queue: List<MediaItem>,
+        wanted: List<MediaItem>,
+    ): List<Pair<Int, MediaItem>> {
+        val used = BooleanArray(queue.size)
+        return wanted.mapNotNull { item ->
+            var index = queue.indices.firstOrNull { !used[it] && queue[it] === item } ?: -1
+            if (index < 0) index = queue.indices.firstOrNull { !used[it] && queue[it] == item } ?: -1
+            if (index < 0) null else {
+                used[index] = true
+                index to queue[index]
+            }
+        }.sortedBy { it.first }
+    }
+
+    private fun insertOnReceiver(resolved: List<Pair<Int, MediaItem>>) {
+        val castClient = client ?: return
+        val castQueue = mediaQueue ?: return
+        // Insert from the end. Receiver IDs used as anchors stay valid, and each callback can update
+        // the local mapping independently if later edits split the originally added block.
+        resolved.asReversed().forEach { (localIndex, item) ->
+            if (receiverLocalIndices.contains(localIndex)) return@forEach
+            if (CastGrants.receiverUrl(item) !is CastGrants.ReceiverUrl.Ready) {
+                Log.w(TAG, "added ${item.description(localIndex)} has no receiver URL")
+                return@forEach
+            }
+            val receiverIndex = receiverLocalIndices.indexOfFirst { it >= localIndex }
+                .let { if (it < 0) receiverLocalIndices.size else it }
+            val beforeId = if (receiverIndex < castQueue.itemCount) {
+                castQueue.itemIdAtIndex(receiverIndex)
+            } else {
+                MediaQueueItem.INVALID_ITEM_ID
+            }
+            val session = sessionGeneration
+            castClient.queueInsertItems(
+                arrayOf(converter.toMediaQueueItem(item)),
+                beforeId,
+                null,
+            ).setResultCallback { result ->
+                if (session != sessionGeneration || client !== castClient) return@setResultCallback
+                if (result.status.isSuccess) {
+                    val current = localQueue().indexOfFirst { it === item }
+                    if (current >= 0 && !receiverLocalIndices.contains(current)) {
+                        val at = receiverLocalIndices.indexOfFirst { it >= current }
+                            .let { if (it < 0) receiverLocalIndices.size else it }
+                        receiverLocalIndices.add(at, current)
+                    }
+                    invalidateState()
+                } else {
+                    Log.e(TAG, "queue insert failed: ${result.status.statusCode}")
+                }
+            }
+        }
+    }
+
+    /** Warms grants for the stretch of the queue the receiver is about to be given. */
+    private fun prefetchGrants() {
+        val queue = localQueue()
+        if (queue.isEmpty()) return
+        val from = lastReceiverLocalIndex.coerceIn(queue.indices)
+        CastGrants.prefetch(
+            queue.subList(from, (from + CAST_QUEUE_BATCH_SIZE * 2).coerceAtMost(queue.size)),
+        )
     }
 
     override fun handleMoveMediaItems(
@@ -720,6 +931,20 @@ class CastQueuePlayer(
         val playWhenReady: Boolean,
     )
 
+    private data class QueueTarget(
+        val item: MediaItem,
+        val mediaId: String,
+        val occurrence: Int,
+    )
+
+    private data class PendingGrantLoad(
+        val target: QueueTarget,
+        val positionMs: Long,
+        val playWhenReady: Boolean,
+        val generation: Int,
+        val session: Int,
+    )
+
     private data class PendingJump(
         val localIndex: Int,
         val receiverItemId: Int,
@@ -751,6 +976,7 @@ class CastQueuePlayer(
         const val SEEK_CONFIRM_TOLERANCE_MS = 2_000L
         const val SEEK_CONFIRM_TIMEOUT_MS = 8_000L
         const val SEEK_BUFFERING_MASK_DURATION_MS = 2_500L
+        const val GRANT_RETRY_MS = 15_000L
 
         val DEVICE_INFO: DeviceInfo = DeviceInfo.Builder(DeviceInfo.PLAYBACK_TYPE_REMOTE)
             .setMaxVolume(20)
