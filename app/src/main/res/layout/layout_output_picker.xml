@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    A compact floating route card. The old picker had the right hierarchy but read as a settings
+    sheet; this keeps its live Android/Finnect model and gives it the small artwork header, glass
+    surface and pill-shaped destinations of the supplied AirPlay references.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_output_picker"
+    android:clipToOutline="true"
+    android:elevation="24dp"
+    android:foreground="@drawable/bg_output_picker_outline">
+
+    <ImageView
+        android:id="@+id/output_picker_backdrop"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:importantForAccessibility="no"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="@id/output_picker_content"
+        app:layout_constraintEnd_toEndOf="@id/output_picker_content"
+        app:layout_constraintStart_toStartOf="@id/output_picker_content"
+        app:layout_constraintTop_toTopOf="@id/output_picker_content" />
+
+    <!--
+        The same flowing-gradient renderer the player uses, over the blurred snapshot rather than
+        instead of it: the snapshot supplies whatever is genuinely behind the card, the gradient
+        supplies the album's colours. It is driven with `ignorePreference`, so this card looks the
+        same whether or not the animated backdrop is switched on in Appearance - the toggle is
+        about the player's own background, not about every glass surface in the app.
+
+        Its alpha is higher than the player's own backdrop: this is a small card read at a glance,
+        and at the player's weight the album colours vanished into the blurred snapshot under them.
+    -->
+    <uk.akane.accord.ui.components.player.FlowingGradientView
+        android:id="@+id/output_picker_gradient"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha="0.62"
+        android:importantForAccessibility="no"
+        app:layout_constraintBottom_toBottomOf="@id/output_picker_content"
+        app:layout_constraintEnd_toEndOf="@id/output_picker_content"
+        app:layout_constraintStart_toStartOf="@id/output_picker_content"
+        app:layout_constraintTop_toTopOf="@id/output_picker_content" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/output_picker_glass_tint"
+        android:importantForAccessibility="no"
+        app:layout_constraintBottom_toBottomOf="@id/output_picker_content"
+        app:layout_constraintEnd_toEndOf="@id/output_picker_content"
+        app:layout_constraintStart_toStartOf="@id/output_picker_content"
+        app:layout_constraintTop_toTopOf="@id/output_picker_content" />
+
+    <LinearLayout
+        android:id="@+id/output_picker_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="14dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <View
+            android:layout_width="36dp"
+            android:layout_height="5dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/bg_output_picker_grabber"
+            android:importantForAccessibility="no" />
+
+        <LinearLayout
+            android:id="@+id/output_picker_now_playing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:minHeight="52dp"
+            android:orientation="horizontal"
+            android:paddingHorizontal="4dp">
+
+            <uk.akane.cupertino.widget.image.SimpleImageView
+                android:id="@+id/output_picker_now_art"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:importantForAccessibility="no"
+                app:cornerRadius="9dp"
+                app:drawable="@drawable/default_cover" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/output_picker_track"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/inter_semibold"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:textColor="@color/onSurfaceColor"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/output_picker_artist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/inter_regular"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:textColor="@color/onSurfaceColorInactive"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/output_picker_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fillViewport="true"
+            android:overScrollMode="ifContentScrolls"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/output_picker_rows"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+        </androidx.core.widget.NestedScrollView>
+
+        <LinearLayout
+            android:id="@+id/output_picker_remote_actions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="7dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/output_picker_play_here_too"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_output_picker_row"
+                android:clickable="true"
+                android:focusable="true"
+                android:fontFamily="@font/inter_semibold"
+                android:gravity="center"
+                android:text="@string/output_play_here_too"
+                android:textColor="@color/onSurfaceColor"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/output_picker_move_here"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_output_picker_row_selected"
+                android:clickable="true"
+                android:focusable="true"
+                android:fontFamily="@font/inter_semibold"
+                android:gravity="center"
+                android:text="@string/output_move_here"
+                android:textColor="@color/onSurfaceColor"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <!--
+            Keeps the target picked while the audio comes back to the phone. The pair above both
+            end the remote session; this one is the "not this song" answer, so the speaker does not
+            have to be chosen again afterwards.
+        -->
+        <TextView
+            android:id="@+id/output_picker_keep_here"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginBottom="7dp"
+            android:background="@drawable/bg_output_picker_row"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/inter_semibold"
+            android:gravity="center"
+            android:text="@string/output_keep_here"
+            android:textColor="@color/onSurfaceColor"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/output_picker_more"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/bg_output_picker_row"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/inter_semibold"
+            android:gravity="center"
+            android:text="@string/output_picker_more"
+            android:textColor="@color/onSurfaceColor"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

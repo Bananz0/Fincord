@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dimension tokens from the upstream Accord UI. Names already present in dimens.xml are
+     left alone so existing layouts keep their current metrics. -->
+<resources>
+    <!-- Circular header action buttons, sized to match the upstream navigation bar. -->
+    <dimen name="navigation_bar_button_size">32dp</dimen>
+    <!-- Album artwork on the album detail header. -->
+    <dimen name="sub_cover_size">208dp</dimen>
+    <dimen name="sub_cover_margin_top">72dp</dimen>
+    <dimen name="sub_cover_corner_radius">10dp</dimen>
+    <dimen name="sub_app_bar_height_with_cover">400dp</dimen>
+    <dimen name="appcompat_dialog_background_inset">16dp</dimen>
+    <dimen name="cf_bottom_bar_margin_bottom">12dp</dimen>
+    <dimen name="default_navigation_active_text_size">14sp</dimen>
+    <dimen name="default_navigation_text_size">12sp</dimen>
+    <dimen name="mediarouter_chooser_list_item_padding_bottom">12dp</dimen>
+    <dimen name="mediarouter_chooser_list_item_padding_end">24dp</dimen>
+    <dimen name="mediarouter_chooser_list_item_padding_start">24dp</dimen>
+    <dimen name="mediarouter_chooser_list_item_padding_top">12dp</dimen>
+    <dimen name="preferences_detail_width">300dp</dimen>
+    <dimen name="preferences_header_width">384dp</dimen>
+    <dimen name="splashscreen_icon_mask_size_no_background">410dp</dimen>
+    <dimen name="splashscreen_icon_mask_size_with_background">342dp</dimen>
+    <dimen name="splashscreen_icon_mask_stroke_no_background">109dp</dimen>
+    <dimen name="splashscreen_icon_mask_stroke_with_background">92dp</dimen>
+    <dimen name="splashscreen_icon_size_no_background">288dp</dimen>
+    <dimen name="splashscreen_icon_size_with_background">240dp</dimen>
+    <!-- Gap between Quick Connect code cells. -->
+    <dimen name="quick_connect_digit_gap">8dp</dimen>
+    <!-- How far the fallback person glyph sits inside the avatar circle. -->
+    <dimen name="jellyfin_avatar_glyph_inset">11dp</dimen>
+</resources>

@@ -1,0 +1,5 @@
+<!-- Circular backing for a user avatar, so accounts with no image still read as a face slot. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="@color/defaultCoverBackground" />
+</shape>

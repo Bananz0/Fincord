@@ -11,4 +11,62 @@
         <item>1</item>
         <item>2</item>
     </string-array>
+
+    <string-array name="quality_badge_content_entries" translatable="false">
+        <item>@string/settings_quality_badge_content_label</item>
+        <item>@string/settings_quality_badge_content_codec</item>
+    </string-array>
+
+    <string-array name="quality_badge_content_values" translatable="false">
+        <item>label</item>
+        <item>codec</item>
+    </string-array>
+
+    <string-array name="replaygain_mode_entries" translatable="false">
+        <item>@string/replaygain_mode_off</item>
+        <item>@string/replaygain_mode_track</item>
+        <item>@string/replaygain_mode_album</item>
+        <item>@string/replaygain_mode_smart</item>
+    </string-array>
+
+    <string-array name="replaygain_mode_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="cache_limit">
+        <item>@string/cache_limit_none</item>
+        <item>512 MB</item>
+        <item>1 GB</item>
+        <item>2 GB</item>
+        <item>5 GB</item>
+        <item>10 GB</item>
+        <item>20 GB</item>
+    </string-array>
+
+    <string-array name="stream_quality">
+        <item>@string/quality_original</item>
+        <item>@string/quality_320</item>
+        <item>@string/quality_256</item>
+        <item>@string/quality_192</item>
+    </string-array>
+
+    <string-array name="stream_quality_val" translatable="false">
+        <item>original</item>
+        <item>320</item>
+        <item>256</item>
+        <item>192</item>
+    </string-array>
+
+    <string-array name="cache_limit_val" translatable="false">
+        <item>0</item>
+        <item>536870912</item>
+        <item>1073741824</item>
+        <item>2147483648</item>
+        <item>5368709120</item>
+        <item>10737418240</item>
+        <item>21474836480</item>
+    </string-array>
 </resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Jellyfin servers are overwhelmingly self-hosted on a LAN over plain HTTP, often with no
+    certificate at all. Since targetSdk 28 Android blocks cleartext by default, which makes an
+    address like http://192.168.1.5:8096 fail with a bare IOException - and there is no way for the
+    user to work around it from inside the app.
+
+    Cleartext is therefore permitted. HTTPS is still used whenever the user gives an https:// URL.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <!-- Lets users who terminate TLS with their own CA (common with reverse proxies on a
+                 home network) install it and have it trusted. -->
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

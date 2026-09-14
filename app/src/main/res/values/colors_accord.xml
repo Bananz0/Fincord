@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Colour tokens from the upstream Accord UI.
+    Kept in their own file so they stay clearly separated from this fork's original palette
+    in colors.xml, which existing layouts still reference.
+-->
+<resources>
+    <color name="addMusicHeaderBackground">#f2f2f7</color>
+    <color name="black">#ff000000</color>
+    <color name="closeButtonBackground">#d1d1d1</color>
+    <color name="color_on_surface">#000000</color>
+    <color name="dialog_border">#22000000</color>
+    <color name="dialog_cancel">#d63a3a</color>
+    <color name="dialog_card">@color/light_elevated_container</color>
+    <color name="dialog_destructive">#d63a3a</color>
+    <color name="dialog_dim">#40000000</color>
+    <color name="dialog_divider">#22000000</color>
+    <color name="dialog_message">#7a7a7a</color>
+    <color name="frontShadeColor">#59000000</color>
+    <color name="light_elevated_container">#f2f2f7</color>
+    <color name="light_elevated_container_child">#ffffff</color>
+    <color name="onSurfaceColorSolid">#000000</color>
+    <color name="popupMenuColorDodge">#383838</color>
+    <color name="popupMenuLargeSeparator">#14000000</color>
+    <color name="popupMenuPlain">#d1b3b3b3</color>
+    <color name="popupMenuSeparator">#8c808080</color>
+    <color name="primaryOverlayColor">#bfffffff</color>
+    <color name="primaryOverlayShadeColor">#73ffffff</color>
+    <!--
+        The surface of a queue row while it is being dragged. White, like every other overlay in
+        the player: that panel is always drawn over artwork, and a tint of the artwork's own light
+        is what makes the card look lifted off it rather than pasted onto it.
+    -->
+    <color name="queueDragCardColor">#33ffffff</color>
+    <color name="red">#ff3b30</color>
+    <color name="secondaryOverlayColor">#26ffffff</color>
+    <color name="secondaryOverlayShadeColor">#33ffffff</color>
+    <color name="settings_background">#f3f2f8</color>
+    <color name="settings_card_background">#ffffff</color>
+    <color name="standardOverlayColor">#ffffff</color>
+    <color name="standardOverlayShadeColor">#d9ffffff</color>
+    <color name="switch_track_off">#d9d9d9</color>
+    <color name="switch_track_on">@color/systemGreen</color>
+    <color name="tertiaryOverlayColor">#0dffffff</color>
+    <color name="tertiaryOverlayShadeColor">#1affffff</color>
+    <color name="white">#ffffffff</color>
+</resources>

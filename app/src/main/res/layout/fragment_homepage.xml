@@ -32,21 +32,67 @@
                 android:layout_height="?attr/actionBarSize"
                 android:elevation="0dp"
                 android:paddingStart="24dp"
-                android:paddingEnd="8dp"
+                android:paddingEnd="16dp"
                 android:paddingBottom="0dp"
                 app:layout_collapseMode="pin"
-                app:menu="@menu/home_menu"
-                app:titleMarginStart="0dp" />
+                app:titleMarginStart="0dp">
+
+                <!--
+                    Circular header actions, matching the upstream Accord navigation bar.
+
+                    No app:menu here on purpose. The toolbar would draw its own three-dot overflow
+                    button beside these, doing the same job twice, and hiding just the icon still
+                    leaves its 48dp touch target holding a gap. HomepageFragment inflates
+                    @menu/home_menu into a popup anchored to the ellipsis button instead.
+                -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <!--
+                        Library sync indicator. A quiet accent-coloured ring in the header rather
+                        than a snackbar, which sat over the content for the length of a sync.
+                    -->
+                    <com.google.android.material.progressindicator.CircularProgressIndicator
+                        android:id="@+id/sync_indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:indeterminate="true"
+                        android:visibility="gone"
+                        app:indicatorColor="@color/accentColor"
+                        app:indicatorInset="0dp"
+                        app:indicatorSize="18dp"
+                        app:trackThickness="2dp" />
+
+                    <ImageButton
+                        android:id="@+id/nav_action_more"
+                        android:layout_width="@dimen/navigation_bar_button_size"
+                        android:layout_height="@dimen/navigation_bar_button_size"
+                        android:background="@drawable/bg_navigation_bar_circle_button"
+                        android:contentDescription="@string/home_menu_settings"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_ellipsis_navigation_bar"
+                        app:tint="@color/contrast_themeColor" />
+
+                    <ImageButton
+                        android:id="@+id/nav_action_account"
+                        android:layout_width="@dimen/navigation_bar_button_size"
+                        android:layout_height="@dimen/navigation_bar_button_size"
+                        android:layout_marginStart="10dp"
+                        android:background="@drawable/bg_navigation_bar_circle_button"
+                        android:contentDescription="@string/jellyfin_login_title"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_person_navigation_bar"
+                        app:tint="@color/contrast_themeColor" />
+                </LinearLayout>
+
+            </com.google.android.material.appbar.MaterialToolbar>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-        <com.google.android.material.divider.MaterialDivider
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
-            app:dividerColor="@color/contrast_colorBackgroundContainer"
-            app:dividerThickness="0.5dp" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -66,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="12dp"
-                android:text="@string/recommendations"
+                android:text="@string/home_made_for_you"
                 android:textColor="@color/contrast_colorOnSurface"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -79,24 +125,16 @@
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp" />
 
-            <TextView
-                android:id="@+id/recommend"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="32dp"
-                android:text="@string/recently_played"
-                android:textColor="@color/contrast_colorOnSurface"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
+            <!--
+                The rest of the home screen: a vertical list of titled rows built from the library,
+                so what appears follows what the library holds rather than being a fixed pair of
+                rows. See HomeFeed.
+            -->
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_r"
+                android:id="@+id/home_sections"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp" />
+                android:paddingBottom="24dp" />
 
         </LinearLayout>
 

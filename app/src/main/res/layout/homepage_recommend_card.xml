@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    One release in a horizontal row - the home page, the library's own shelves, and both artist
+    pages all draw with this.
+
+    The artwork is the same treatment the albums grid uses: the shared rounded background, clipped
+    to it, and nothing drawn around it. It used to be a Material card with a hairline outline and a
+    tighter corner, inherited from before the app had a look of its own, so the covers on the home
+    and library shelves sat in little boxes that no other cover in the app had. The text follows
+    suit - the two lines were the only titles left at the platform default face and size.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="168dp"
     android:layout_height="wrap_content"
     android:layout_marginStart="4dp"
@@ -11,34 +21,61 @@
     android:foreground="?attr/selectableItemBackground"
     android:orientation="vertical">
 
-    <com.google.android.material.card.MaterialCardView
+    <FrameLayout
+        android:id="@+id/cover_frame"
         android:layout_width="168dp"
         android:layout_height="168dp"
-        app:cardCornerRadius="6dp"
-        app:strokeColor="@color/contrast_colorOutline"
-        app:strokeWidth="1dp">
+        android:background="@drawable/bg_album_cover_rounded"
+        android:clipToOutline="true">
+
+        <uk.akane.accord.ui.components.CollageArtView
+            android:id="@+id/collage_art"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:focusable="false"
+            android:visibility="gone" />
+
+        <uk.akane.accord.ui.components.StationArtView
+            android:id="@+id/station_art"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:focusable="false"
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/cover"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:importantForAccessibility="no" />
+            android:clickable="false"
+            android:focusable="false"
+            android:importantForAccessibility="no"
+            android:scaleType="centerCrop" />
 
-    </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:maxLines="1"
-        android:textColor="@color/contrast_colorOnSurface" />
+        android:fontFamily="@font/inter_medium"
+        android:includeFontPadding="false"
+        android:singleLine="true"
+        android:textColor="@color/onSurfaceColor"
+        android:textSize="15sp"
+        tools:text="Title" />
 
     <TextView
         android:id="@+id/subtitle"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:textColor="@color/contrast_colorOnSurfaceSecondary" />
+        android:fontFamily="@font/inter_regular"
+        android:includeFontPadding="false"
+        android:singleLine="true"
+        android:textColor="@color/onSurfaceColorInactive"
+        android:textSize="13sp"
+        tools:text="Artist" />
 
 </LinearLayout>

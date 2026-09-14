@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="52dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/audio_quality_row_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:fontFamily="@font/inter_regular"
+        android:includeFontPadding="false"
+        android:paddingHorizontal="14dp"
+        android:paddingVertical="16dp"
+        android:textColor="@color/onSurfaceColor"
+        android:textSize="15sp"
+        tools:text="Source: FLAC 24-bit/96 kHz" />
+
+    <View
+        android:id="@+id/audio_quality_row_divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginStart="14dp"
+        android:alpha="0.5"
+        android:background="@color/bottomNavigationDividerColor" />
+
+</LinearLayout>

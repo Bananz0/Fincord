@@ -18,6 +18,7 @@ import kotlin.math.pow
 object LrcUtils {
 
     private const val TAG = "LrcUtils"
+    private val wordTimeMarksRegex = "<(\\d+:\\d{2})([.:]\\d+)?>".toRegex()
 
     @Parcelize
     enum class Label(val isWalaoke: Boolean) : Parcelable {
@@ -63,8 +64,11 @@ object LrcUtils {
         musicFile: File?,
         trim: Boolean
     ): MutableList<MediaStoreUtils.Lyric>? {
-        val lrcFile = musicFile?.let { File(it.parentFile, it.nameWithoutExtension + ".lrc") }
-        return loadLrcFile(lrcFile)?.let {
+        val lyricFile = musicFile?.let {
+            val enhanced = File(it.parentFile, it.nameWithoutExtension + ".elrc")
+            if (enhanced.exists()) enhanced else File(it.parentFile, it.nameWithoutExtension + ".lrc")
+        }
+        return loadLrcFile(lyricFile)?.let {
             try {
                 parseLrcString(it, trim)
             } catch (e: Exception) {
@@ -94,8 +98,9 @@ object LrcUtils {
      *  - Translations, type 1 (ex: pasting first japanese and then english lrc file into one file)
      *  - Translations, type 2 (ex: translated line directly under previous non-translated line)
      *  - The timestamps can variate in the following ways: [00:11] [00:11:22] [00:11.22] [00:11.222] [00:11:222]
+     * We also support Extended LRC word timing, for example:
+     *  - [00:11.22] <00:11.22> hello <00:12.85> i am <00:13.23> lyric
      * In the future, we also want to support:
-     *  - Extended LRC (ref Wikipedia) ex: [00:11.22] <00:11.22> hello <00:12.85> i am <00:13.23> lyric
      *  - Wakaloke gender extension (ref Wikipedia)
      *  - [offset:] tag in header (ref Wikipedia)
      * We completely ignore all ID3 tags from the header as MediaStore is our source of truth.
@@ -103,7 +108,6 @@ object LrcUtils {
     @VisibleForTesting
     fun parseLrcString(lrcContent: String, trim: Boolean): MutableList<MediaStoreUtils.Lyric> {
         val timeMarksRegex = "\\[(\\d+:\\d{2})([.:]\\d+)?]".toRegex()
-        val wordTimeMarksRegex = "<(\\d+:\\d{2})([.:]\\d+)?>".toRegex()
         val labelRegex = "(?![\\d<])(\\d+|v\\d+|bg|F|M|D):(\\s?|.*:\\d)".toRegex()
         val labelRegexNumberOnly = "\\d+:\\s?".toRegex()
         val bgRegex = "\\[bg:\\s?(.*?)]".toRegex()
@@ -138,7 +142,13 @@ object LrcUtils {
                     return@let
                 }
                 val lyricLine = line.substring(sequence.last().range.last + 1)
-                    .let { if (trim) it.trim() else it }
+                    // Always trimmed, whatever the setting says. An LRC file routinely puts
+                    // a space after the timestamp; rendered, that indents the first line of
+                    // every verse while the lines it wraps onto sit flush. The setting is
+                    // about dropping empty lines - a different question - and on any device
+                    // where it had already been written as off, leaving this behind it meant
+                    // the indent could never be fixed.
+                    .trim()
                     .let {
                         if ((currentLabel == Label.Voice1 || currentLabel == Label.Voice2) && !it.trim().startsWith("v")) {
                             it.replaceFirst(labelRegexNumberOnly, "")
@@ -149,31 +159,13 @@ object LrcUtils {
                     val timeString = match.groupValues[1] + match.groupValues[2]
                     currentTimeStamp = parseTime(timeString)
 
-                    if (wordTimeMarksRegex.containsMatchIn(lyricLine)) {
-                        val wordMatches = wordTimeMarksRegex.findAll(lyricLine)
-                        val words = lyricLine.split(wordTimeMarksRegex)
-                        var lastWordTimestamp = currentTimeStamp
-                        val wordTimestamps = words.mapIndexedNotNull { index, _ ->
-                            wordMatches.elementAtOrNull(index)?.let { match ->
-                                val wordTimestamp =
-                                    parseTime(match.groupValues[1] + match.groupValues[2])
-                                Triple(
-                                    words.take(index + 1).sumOf { it.length },
-                                    lastWordTimestamp,
-                                    wordTimestamp
-                                ).also {
-                                    lastWordTimestamp = wordTimestamp
-                                }
-                            }
-                        }.toMutableList().apply {
-                            // Remove word timestamps whose content is empty
-                            removeIf { it.first == 0 }
-                        }
+                    val enhanced = parseEnhancedLine(lyricLine, currentTimeStamp)
+                    if (enhanced != null) {
                         list.add(
                             MediaStoreUtils.Lyric(
                                 startTimestamp = currentTimeStamp,
-                                content = lyricLine.replace(wordTimeMarksRegex, ""),
-                                wordTimestamps = wordTimestamps,
+                                content = enhanced.content,
+                                wordTimestamps = enhanced.wordTimestamps,
                                 label = currentLabel
                             )
                         )
@@ -196,31 +188,13 @@ object LrcUtils {
                 result.forEach { match ->
                     currentLabel = Label.Background
                     val lyricLine = match.value.substring(4, match.value.length - 1).trim()
-                    if (wordTimeMarksRegex.containsMatchIn(lyricLine)) {
-                        val wordMatches = wordTimeMarksRegex.findAll(lyricLine)
-                        val words = lyricLine.split(wordTimeMarksRegex)
-                        var lastWordTimestamp = currentTimeStamp
-                        val wordTimestamps = words.mapIndexedNotNull { index, _ ->
-                            wordMatches.elementAtOrNull(index)?.let { match ->
-                                val wordTimestamp =
-                                    parseTime(match.groupValues[1] + match.groupValues[2])
-                                Triple(
-                                    words.take(index + 1).sumOf { it.length },
-                                    lastWordTimestamp,
-                                    wordTimestamp
-                                ).also {
-                                    lastWordTimestamp = wordTimestamp
-                                }
-                            }
-                        }.toMutableList().apply {
-                            // Remove word timestamps whose content is empty
-                            removeIf { it.first == 0 }
-                        }
+                    val enhanced = parseEnhancedLine(lyricLine, currentTimeStamp)
+                    if (enhanced != null) {
                         list.add(
                             MediaStoreUtils.Lyric(
                                 startTimestamp = currentTimeStamp + 1,
-                                content = lyricLine.replace(wordTimeMarksRegex, ""),
-                                wordTimestamps = wordTimestamps,
+                                content = enhanced.content,
+                                wordTimestamps = enhanced.wordTimestamps,
                                 label = currentLabel
                             )
                         )
@@ -255,6 +229,23 @@ object LrcUtils {
         // Add end timestamp to each item
         list.forEachIndexed { index, it ->
             if (it.wordTimestamps.isNotEmpty()) {
+                val timings = it.wordTimestamps.toMutableList()
+                val last = timings.last()
+                if (last.third == Long.MAX_VALUE) {
+                    val completedDurations = timings.dropLast(1)
+                        .map { timing -> timing.third - timing.second }
+                        .filter { duration -> duration in MIN_WORD_DURATION_MS..MAX_WORD_DURATION_MS }
+                        .sorted()
+                    val estimatedDuration = completedDurations
+                        .getOrNull(completedDurations.size / 2)
+                        ?: DEFAULT_LAST_WORD_DURATION_MS
+                    val nextLineStart = list.getOrNull(index + 1)?.startTimestamp
+                    val end = nextLineStart
+                        ?.takeIf { start -> start > last.second }
+                        ?: (last.second + estimatedDuration)
+                    timings[timings.lastIndex] = last.copy(third = end)
+                    it.wordTimestamps = timings
+                }
                 it.endTimestamp = it.wordTimestamps.last().third
             } else {
                 it.endTimestamp = list.getOrNull(index + 1)?.startTimestamp ?: Long.MAX_VALUE
@@ -280,6 +271,37 @@ object LrcUtils {
             list.add(MediaStoreUtils.Lyric(content = lrcContent))
         }
         return list
+    }
+
+    private data class ParsedEnhancedLine(
+        val content: String,
+        val wordTimestamps: List<Triple<Int, Long, Long>>,
+    )
+
+    /** Converts ELRC start markers into the progressive text ranges consumed by the player. */
+    private fun parseEnhancedLine(rawLine: String, lineStart: Long): ParsedEnhancedLine? {
+        val matches = wordTimeMarksRegex.findAll(rawLine).toList()
+        if (matches.isEmpty()) return null
+
+        val content = rawLine.replace(wordTimeMarksRegex, "")
+        val markers = matches.map { match ->
+            val cleanOffset = rawLine.substring(0, match.range.first)
+                .replace(wordTimeMarksRegex, "")
+                .length
+            cleanOffset to parseTime(match.groupValues[1] + match.groupValues[2])
+        }.toMutableList()
+        if (markers.first().first > 0) markers.add(0, 0 to lineStart)
+
+        val timings = markers.mapIndexedNotNull { index, marker ->
+            val endOffset = markers.getOrNull(index + 1)?.first ?: content.length
+            if (endOffset <= marker.first) return@mapIndexedNotNull null
+            Triple(
+                endOffset,
+                marker.second,
+                markers.getOrNull(index + 1)?.second ?: Long.MAX_VALUE,
+            )
+        }
+        return ParsedEnhancedLine(content, timings)
     }
 
     private fun parseSpeakerLabel(labelContent: String, firstVoice: Int = -1): Pair<Label, Int?> {
@@ -313,7 +335,7 @@ object LrcUtils {
     }
 
     private fun parseTime(timeString: String): Long {
-        val timeRegex = "(\\d+):(\\d{2})[.:](\\d+)".toRegex()
+        val timeRegex = "(\\d+):(\\d{2})(?:[.:](\\d+))?".toRegex()
         val matchResult = timeRegex.find(timeString)
 
         val minutes = matchResult?.groupValues?.get(1)?.toLongOrNull() ?: 0
@@ -327,6 +349,10 @@ object LrcUtils {
 
         return minutes * 60000 + seconds * 1000 + milliseconds
     }
+
+    private const val MIN_WORD_DURATION_MS = 80L
+    private const val MAX_WORD_DURATION_MS = 3_000L
+    private const val DEFAULT_LAST_WORD_DURATION_MS = 700L
 }
 
 // Class heavily based on MIT-licensed https://github.com/yoheimuta/ExoPlayerMusic/blob/77cfb989b59f6906b1170c9b2d565f9b8447db41/app/src/main/java/com/github/yoheimuta/amplayer/playback/UsltFrameDecoder.kt

@@ -23,22 +23,68 @@
         android:title="@string/preference_category_quality">
 
         <SwitchPreferenceCompat
-            android:defaultValue="false"
-            android:key="floatoutput"
+            android:defaultValue="true"
+            android:key="usb_hifi"
             android:layout="@layout/preference_switch"
-            android:summary="@string/settings_float_output_summary"
-            android:title="@string/settings_float_output"
+            android:summary="@string/settings_usb_hifi_summary"
+            android:title="@string/settings_usb_hifi"
             android:widgetLayout="@layout/preference_switch_widget"
             app:iconSpaceReserved="false" />
 
         <SwitchPreferenceCompat
-            android:defaultValue="true"
+            android:defaultValue="false"
+            android:key="floatoutput"
+            android:layout="@layout/preference_switch"
+            android:summary="@string/settings_hires_output_summary"
+            android:title="@string/settings_hires_output"
+            android:widgetLayout="@layout/preference_switch_widget"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
             android:key="ps_hardware_acc"
             android:layout="@layout/preference_switch"
             android:summary="@string/settings_hardware_acceleration_summary"
             android:title="@string/settings_hardware_acceleration"
             android:widgetLayout="@layout/preference_switch_widget"
             app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:layout="@layout/preference_category_md"
+        android:title="@string/settings_replaygain">
+
+        <DropDownPreference
+            android:defaultValue="0"
+            android:entries="@array/replaygain_mode_entries"
+            android:entryValues="@array/replaygain_mode_values"
+            android:key="replaygain_mode"
+            android:layout="@layout/preference_dropdown_md"
+            android:summary="@string/settings_replaygain_summary"
+            android:title="@string/settings_replaygain_mode"
+            app:iconSpaceReserved="false" />
+
+        <SeekBarPreference
+            android:defaultValue="0"
+            android:key="replaygain_preamp_db"
+            android:layout="@layout/preference_seekbar"
+            android:max="15"
+            android:summary="@string/settings_replaygain_preamp_summary"
+            android:title="@string/settings_replaygain_preamp"
+            app:iconSpaceReserved="false"
+            app:min="-15"
+            app:showSeekBarValue="true" />
+
+        <SeekBarPreference
+            android:defaultValue="0"
+            android:key="replaygain_untagged_attenuation_db"
+            android:layout="@layout/preference_seekbar"
+            android:max="15"
+            android:summary="@string/settings_replaygain_untagged_summary"
+            android:title="@string/settings_replaygain_untagged"
+            app:iconSpaceReserved="false"
+            app:showSeekBarValue="true" />
 
     </PreferenceCategory>
 

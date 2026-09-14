@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:layout="@layout/preference_category_md"
+        android:title="@string/settings_category_quality">
+
+        <DropDownPreference
+            android:defaultValue="original"
+            android:entries="@array/stream_quality"
+            android:entryValues="@array/stream_quality_val"
+            android:key="streaming_quality"
+            android:layout="@layout/preference_dropdown_md"
+            android:title="@string/quality_streaming"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
+        <DropDownPreference
+            android:defaultValue="original"
+            android:entries="@array/stream_quality"
+            android:entryValues="@array/stream_quality_val"
+            android:key="metered_streaming_quality"
+            android:layout="@layout/preference_dropdown_md"
+            android:title="@string/quality_streaming_metered"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
+        <DropDownPreference
+            android:defaultValue="original"
+            android:entries="@array/stream_quality"
+            android:entryValues="@array/stream_quality_val"
+            android:key="download_quality"
+            android:layout="@layout/preference_dropdown_md"
+            android:title="@string/quality_download"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
+        <Preference
+            android:layout="@layout/preference_basic"
+            android:selectable="false"
+            android:summary="@string/quality_explainer"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:layout="@layout/preference_category_md"
+        android:title="@string/settings_category_downloads">
+
+        <Preference
+            android:key="downloads_size"
+            android:layout="@layout/preference_basic"
+            android:selectable="false"
+            android:title="@string/downloads_size"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="downloads_cache_size"
+            android:layout="@layout/preference_basic"
+            android:selectable="false"
+            android:title="@string/downloads_cache_size"
+            app:iconSpaceReserved="false" />
+
+        <DropDownPreference
+            android:defaultValue="5368709120"
+            android:entries="@array/cache_limit"
+            android:entryValues="@array/cache_limit_val"
+            android:key="cache_size_limit"
+            android:layout="@layout/preference_dropdown_md"
+            android:summary="@string/downloads_cache_limit_summary"
+            android:title="@string/downloads_cache_limit"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="downloads_clear"
+            android:layout="@layout/preference_basic"
+            android:summary="@string/downloads_clear_summary"
+            android:title="@string/downloads_clear"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -17,6 +17,7 @@
 
 package org.akanework.gramophone.logic.utils
 
+
 import android.app.RecoverableSecurityException
 import android.content.ContentUris
 import android.content.Context
@@ -29,7 +30,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.Toast
+import uk.akane.accord.ui.components.NoToast as Toast
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getLongOrNull
 import androidx.core.database.getStringOrNull
@@ -41,7 +42,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
-import org.akanework.gramophone.R
+import uk.akane.accord.R
 import org.akanework.gramophone.logic.getColumnIndexOrNull
 import org.akanework.gramophone.logic.hasAlbumArtistIdInMediaStore
 import org.akanework.gramophone.logic.hasImagePermission
@@ -50,7 +51,6 @@ import org.akanework.gramophone.logic.hasScopedStorageV1
 import org.akanework.gramophone.logic.hasScopedStorageV2
 import org.akanework.gramophone.logic.hasScopedStorageWithMediaTypes
 import org.akanework.gramophone.logic.putIfAbsentSupport
-import org.akanework.gramophone.logic.utils.DatabaseUtils.getPrivatePlaylist
 import org.akanework.gramophone.logic.utils.LrcUtils.Label
 import org.akanework.gramophone.ui.LibraryViewModel
 import java.io.File
@@ -86,7 +86,7 @@ object MediaStoreUtils {
         override val songList: MutableList<MediaItem>
     }
 
-    private data class AlbumImpl(
+    internal data class AlbumImpl(
         override val id: Long?,
         override val title: String?,
         override val artist: String?,
@@ -140,7 +140,7 @@ object MediaStoreUtils {
         val content: String = "",
         var translationContent: String = "",
         var absolutePosition: Int? = null,
-        val wordTimestamps: List<Triple<Int, Long, Long>> = emptyList(),
+        var wordTimestamps: List<Triple<Int, Long, Long>> = emptyList(),
         val label: Label = Label.None
     ) : Parcelable
 
@@ -207,7 +207,11 @@ object MediaStoreUtils {
         val playlistList: MutableList<Playlist>,
         val folderStructure: FileNode,
         val shallowFolder: FileNode,
-        val folders: Set<String>
+        val folders: Set<String>,
+        /** Release owners, already indexed while the flat library is grouped. */
+        val primaryArtistList: MutableList<Artist> = artistList,
+        /** Per-track guests, kept separate from release ownership. */
+        val featuredArtistList: MutableList<Artist> = mutableListOf(),
     )
 
     class FileNode(
@@ -228,7 +232,7 @@ object MediaStoreUtils {
         }
     }
 
-    private fun handleMediaFolder(path: String, rootNode: FileNode): FileNode {
+    internal fun handleMediaFolder(path: String, rootNode: FileNode): FileNode {
         val newPath = if (path.endsWith('/')) path.substring(1, path.length - 1)
         else path.substring(1)
         val splitPath = newPath.split('/')
@@ -244,7 +248,7 @@ object MediaStoreUtils {
         return node
     }
 
-    private fun handleShallowMediaItem(
+    internal fun handleShallowMediaItem(
         mediaItem: MediaItem,
         albumId: Long?,
         path: String,
@@ -723,13 +727,8 @@ object MediaStoreUtils {
             libraryViewModel.folderStructure.value = pairObject.folderStructure
             libraryViewModel.shallowFolderStructure.value = pairObject.shallowFolder
             libraryViewModel.allFolderSet.value = pairObject.folders
-            if (libraryViewModel.recommendList.value == null) {
-                libraryViewModel.recommendList.value = RecommendationFactory(
-                    context = context,
-                    libraryViewModel = libraryViewModel
-                ).fetchRecommendList()
-            }
-            getPrivatePlaylist(libraryViewModel, context)
+            // The private-playlist pass went with DatabaseUtils and the old UI: those playlists
+            // were MediaStore-backed, and the library is the Jellyfin server now.
             Log.d("TAG", "FINISHED BUILDING!")
             then?.let { it() }
         }

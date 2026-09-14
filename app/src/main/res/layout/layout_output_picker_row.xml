@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    One output destination, drawn the way the AirPlay picker draws one: a pill whose fill is that
+    destination's volume.
+
+    The volume used to be a slim slider on a second line underneath, which made a row with volume
+    visibly a different object from a row without, and pushed the list long enough to scroll. Here
+    the row *is* the control - the same OverlaySlider the player uses, told to take the whole height
+    - and it appears only on the destination actually playing, which is the one whose volume there
+    is any point in moving.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/output_row_click_target"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="7dp"
+    android:background="@drawable/bg_output_picker_row"
+    android:clickable="true"
+    android:clipToOutline="true"
+    android:focusable="true"
+    android:minHeight="@dimen/output_row_height_compact">
+
+    <!--
+        Behind the label rather than beside it, and first in the file so it draws underneath. The
+        views above it are not clickable, so a touch falls through to this one; the row's own click
+        still selects the destination on every row where this is hidden.
+    -->
+    <uk.akane.cupertino.widget.slider.OverlaySlider
+        android:id="@+id/output_row_volume"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/output_volume"
+        android:visibility="gone"
+        app:overlayEmphasizeOnTouch="false"
+        app:overshoot="false"
+        app:sidePadding="0dp"
+        app:overlayTrackCornerRadius="22dp"
+        app:overlayTrackFillsHeight="true"
+        tools:visibility="visible" />
+
+    <!--
+        A fixed minimum so a one-line destination ("This phone") stands as tall as one carrying a
+        subtitle and a format badge, and the pills in the list keep an even rhythm.
+    -->
+    <!--
+        `layout_gravity`, not just `gravity`. A FrameLayout lays an unspecified child out at its top
+        left, so the moment the row's minimum height exceeded what the content needed - which is
+        every row once the list is given one height - the content sat against the top edge with all
+        the slack underneath it. `gravity` centres the icon and label *within* this row; only
+        `layout_gravity` centres this row within the pill.
+
+        The height itself is set from code, once for the whole list, so every destination is the
+        same size whatever any one of them happens to know about itself.
+    -->
+    <LinearLayout
+        android:id="@+id/output_row_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:duplicateParentState="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="4dp">
+
+        <uk.akane.accord.ui.components.SplitTintImageView
+            android:id="@+id/output_row_icon"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginEnd="10dp"
+            android:importantForAccessibility="no"
+            app:tint="@color/onSurfaceColor"
+            tools:src="@drawable/ic_output_phone" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <uk.akane.accord.ui.components.SplitTintTextView
+                android:id="@+id/output_row_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/inter_regular"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:textColor="@color/onSurfaceColor"
+                android:textSize="14sp"
+                tools:text="Q-Series Soundbar" />
+
+            <uk.akane.accord.ui.components.SplitTintTextView
+                android:id="@+id/output_row_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/inter_regular"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:textColor="@color/onSurfaceColorInactive"
+                android:textSize="11sp"
+                android:visibility="gone"
+                tools:text="Bluetooth"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/output_row_signal_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/bg_output_signal_badge"
+                android:ellipsize="end"
+                android:fontFamily="@font/inter_semibold"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="2dp"
+                android:textColor="@color/onSurfaceColor"
+                android:textSize="10sp"
+                android:visibility="gone"
+                tools:text="SSC UHQ · 24-bit · 96 kHz"
+                tools:visibility="visible" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/output_row_selection"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_output_picker_radio_unselected">
+
+            <ImageView
+                android:id="@+id/output_row_check"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_gravity="center"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_checkmark"
+                android:visibility="gone"
+                app:tint="@android:color/white"
+                tools:visibility="visible" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

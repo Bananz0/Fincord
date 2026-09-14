@@ -21,11 +21,14 @@ import android.annotation.SuppressLint
 
 class SupportComparator<T, U>(
     private val cmp: Comparator<U>,
+    private val fallback: Comparator<T>?,
     private val invert: Boolean,
     private val convert: (T) -> U
 ) : Comparator<T> {
     override fun compare(o1: T, o2: T): Int {
-        return cmp.compare(convert(o1), convert(o2)) * (if (invert) -1 else 1)
+        val result = cmp.compare(convert(o1), convert(o2)) * (if (invert) -1 else 1)
+        if (result != 0) return result
+        return fallback?.compare(o1, o2) ?: 0
     }
 
     companion object {
@@ -33,21 +36,26 @@ class SupportComparator<T, U>(
             return Comparator { _, _ -> 0 }
         }
 
-        fun <T> createInversionComparator(cmp: Comparator<T>, invert: Boolean = false):
-                Comparator<T> {
-            if (!invert) return cmp
-            return SupportComparator(cmp, true) { it }
+        fun <T> createInversionComparator(
+            cmp: Comparator<T>,
+            invert: Boolean = false,
+            fallback: Comparator<T>? = null,
+        ): Comparator<T> {
+            if (!invert && fallback == null) return cmp
+            return SupportComparator(cmp, fallback, invert) { it }
         }
 
         @SuppressLint("NewApi")
         fun <T> createAlphanumericComparator(
             inverted: Boolean = false,
-            cnv: (T) -> CharSequence
+            cnv: (T) -> CharSequence?,
+            fallback: Comparator<T>? = null,
         ): Comparator<T> {
             return SupportComparator(
                 AlphaNumericComparator(),
+                fallback,
                 inverted
-            ) { cnv(it).toString() }
+            ) { cnv(it)?.toString() }
         }
     }
 }

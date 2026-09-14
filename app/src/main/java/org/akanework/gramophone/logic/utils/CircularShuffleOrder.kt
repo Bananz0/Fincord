@@ -137,8 +137,12 @@ class CircularShuffleOrder private constructor(
             fun deserialize(data: String?): Persistent {
                 if (data == null || data.length < 2) return Persistent(Random.nextLong(), null)
                 val split = data.split(';')
-                return Persistent(split[0].toLong(), if (split.size > 1) split[1]
-                    .split(',').map(String::toInt).toIntArray() else null)
+                // An empty queue serializes as "seed;" - treat that (and any stray empty
+                // entries) as no data instead of failing on "".toInt().
+                val shuffled = if (split.size > 1) split[1]
+                    .split(',').filter(String::isNotEmpty).map(String::toInt).toIntArray()
+                    .takeIf { it.isNotEmpty() } else null
+                return Persistent(split[0].toLong(), shuffled)
             }
         }
 

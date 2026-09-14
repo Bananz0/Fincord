@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:layout="@layout/preference_category_md"
+        android:title="@string/lastfm_category_account">
+
+        <!--
+            Shown only when the Jellyfin server is found to be scrobbling already. Hidden by default
+            so a server that cannot be asked - offline, or one that keeps its plugin list to
+            administrators - says nothing rather than guessing.
+        -->
+        <Preference
+            android:key="lastfm_server_scrobbles"
+            android:layout="@layout/preference_basic"
+            android:persistent="false"
+            android:selectable="false"
+            android:summary="@string/lastfm_server_scrobbles_summary"
+            android:title="@string/lastfm_server_scrobbles"
+            app:isPreferenceVisible="false"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="lastfm_account"
+            android:layout="@layout/preference_basic"
+            android:title="@string/lastfm_account"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="lastfm_api_keys"
+            android:layout="@layout/preference_basic"
+            android:summary="@string/lastfm_api_keys_summary"
+            android:title="@string/lastfm_api_keys"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="lastfm_broker"
+            android:layout="@layout/preference_basic"
+            android:summary="@string/lastfm_broker_summary"
+            android:title="@string/lastfm_broker"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:layout="@layout/preference_category_md"
+        android:title="@string/lastfm_category_scrobbling">
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="lastfm_scrobbling_enabled"
+            android:layout="@layout/preference_switch"
+            android:summary="@string/lastfm_scrobble_summary"
+            android:title="@string/lastfm_scrobble"
+            android:widgetLayout="@layout/preference_switch_widget"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="lastfm_pending"
+            android:layout="@layout/preference_basic"
+            android:title="@string/lastfm_pending"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

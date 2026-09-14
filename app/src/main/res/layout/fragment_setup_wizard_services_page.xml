@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The wizard's third page: the services this fork adds beyond the library itself.
+
+    Everything here is optional - the app is fully usable with only a Jellyfin server - so the page
+    says so and offers each one rather than blocking on any. Same card, icon tiles and row buttons as
+    the pages before it, so the wizard still reads as one flow.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:background="@color/setupWizardSurfaceColor">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/standard_side_padding"
+        android:fontFamily="@font/inter_bold"
+        android:includeFontPadding="false"
+        android:text="@string/setup_services_title"
+        android:textColor="@color/onSurfaceColor"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.15" />
+
+    <TextView
+        android:id="@+id/explanation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:includeFontPadding="false"
+        android:text="@string/setup_services_desc"
+        android:textColor="@color/onSurfaceColorInactive"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="@id/title"
+        app:layout_constraintStart_toStartOf="@id/title"
+        app:layout_constraintTop_toBottomOf="@id/title" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/general_card"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        app:cardBackgroundColor="@color/setupWizardCardColor"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="@id/explanation"
+        app:layout_constraintStart_toStartOf="@id/explanation"
+        app:layout_constraintTop_toBottomOf="@id/explanation"
+        style="?materialCardViewFilledStyle">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Lidarr -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/lidarr_ic"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/ic_launcher_background"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_download"
+                    app:tint="@color/onAccentColor"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    style="@style/Widget.Accord.SetupWizard.PermissionPage.Icon" />
+
+                <TextView
+                    android:id="@+id/lidarr_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:fontFamily="@font/inter_semibold"
+                    android:includeFontPadding="false"
+                    android:text="@string/settings_category_lidarr"
+                    android:textColor="@color/onSurfaceColor"
+                    android:textSize="19sp"
+                    app:layout_constraintStart_toEndOf="@id/lidarr_ic"
+                    app:layout_constraintTop_toTopOf="@id/lidarr_ic" />
+
+                <TextView
+                    android:id="@+id/lidarr_subtitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:fontFamily="@font/inter_regular"
+                    android:text="@string/setup_services_lidarr_desc"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/lidarr_btn"
+                    app:layout_constraintStart_toEndOf="@id/lidarr_ic"
+                    app:layout_constraintTop_toBottomOf="@id/lidarr_title" />
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.5"
+                    app:dividerColor="@color/bottomNavigationDividerColor"
+                    app:dividerThickness="0.25dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/lidarr_title" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/lidarr_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="18dp"
+                    android:checkable="true"
+                    android:minHeight="0dp"
+                    android:minWidth="72dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="@string/setup_services_connect"
+                    android:textColor="@color/cl_ask_perm_text"
+                    app:backgroundTint="@color/cl_ask_perm_btn"
+                    app:cornerRadius="24dp"
+                    app:toggleCheckedStateOnClick="false"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    style="@style/Widget.Accord.SetupWizard.PermissionPage.AskButton" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Last.fm -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/lastfm_ic"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/ic_launcher_background"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_note"
+                    app:tint="@color/onAccentColor"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    style="@style/Widget.Accord.SetupWizard.PermissionPage.Icon" />
+
+                <TextView
+                    android:id="@+id/lastfm_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:fontFamily="@font/inter_semibold"
+                    android:includeFontPadding="false"
+                    android:text="@string/settings_category_scrobbling"
+                    android:textColor="@color/onSurfaceColor"
+                    android:textSize="19sp"
+                    app:layout_constraintStart_toEndOf="@id/lastfm_ic"
+                    app:layout_constraintTop_toTopOf="@id/lastfm_ic" />
+
+                <TextView
+                    android:id="@+id/lastfm_subtitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:fontFamily="@font/inter_regular"
+                    android:text="@string/setup_services_lastfm_desc"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/lastfm_btn"
+                    app:layout_constraintStart_toEndOf="@id/lastfm_ic"
+                    app:layout_constraintTop_toBottomOf="@id/lastfm_title" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/lastfm_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="18dp"
+                    android:checkable="true"
+                    android:minHeight="0dp"
+                    android:minWidth="72dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="@string/setup_services_connect"
+                    android:textColor="@color/cl_ask_perm_text"
+                    app:backgroundTint="@color/cl_ask_perm_btn"
+                    app:cornerRadius="24dp"
+                    app:toggleCheckedStateOnClick="false"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    style="@style/Widget.Accord.SetupWizard.PermissionPage.AskButton" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/note"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:includeFontPadding="false"
+        android:text="@string/setup_services_note"
+        android:textColor="@color/onSurfaceColorInactive"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@id/general_card"
+        app:layout_constraintStart_toStartOf="@id/general_card"
+        app:layout_constraintTop_toBottomOf="@id/general_card" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

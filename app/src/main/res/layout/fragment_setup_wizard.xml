@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_card_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    style="?materialCardViewFilledStyle"
+    android:visibility="invisible"
+    app:cardBackgroundColor="@color/surfaceColor"
+    app:cardCornerRadius="@dimen/shrink_container_default_radius">
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/sw_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="112dp"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/continue_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standard_side_padding"
+        android:layout_marginEnd="@dimen/standard_side_padding"
+        android:layout_marginBottom="48dp"
+        android:layout_gravity="bottom"
+        android:text="@string/btn_continue"
+        style="@style/Widget.Accord.SetupWizard.WelcomePage.ContinueButton"
+        />
+
+</com.google.android.material.card.MaterialCardView>

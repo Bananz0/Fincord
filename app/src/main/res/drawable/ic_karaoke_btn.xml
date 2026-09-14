@@ -1,0 +1,5 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/ic_karaoke_mic_on" android:state_checked="true" />
+    <item android:drawable="@drawable/ic_karaoke_mic" android:state_checked="false" />
+    <item android:drawable="@drawable/ic_karaoke_mic" />
+</selector>

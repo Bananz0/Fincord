@@ -156,4 +156,52 @@
     <color name="md_theme_surfaceContainer_highContrast">#1F1F1F</color>
     <color name="md_theme_surfaceContainerHigh_highContrast">#2A2A2A</color>
     <color name="md_theme_surfaceContainerHighest_highContrast">#353535</color>
+
+    <!-- ==== Ported from upstream Accord ==== -->
+    <color name="accentColor">#FA2D48</color>
+    <color name="accentColorFainted">#1AFA2D48</color>
+    <color name="autofillHighlightColor">#24FA2D48</color>
+    <color name="coverBorder">#1A000000</color>
+    <color name="surfaceColor">#000000</color>
+    <color name="onSurfaceColor">#D9FFFFFF</color>
+    <color name="onSurfaceColorFainted">#0DFFFFFF</color>
+    <color name="onSurfaceColorInactive">#80FFFFFF</color>
+    <color name="setupWizardSurfaceColor">#000000</color>
+    <color name="setupWizardCardColor">#111114</color>
+    <color name="defaultCoverColor">#30FFFFFF</color>
+    <color name="dividerColor">#12FFFFFF</color>
+    <color name="bottomNavigationColor">#000000</color>
+    <color name="bottomNavigationPanelColor">#111114</color>
+    <color name="bottomNavigationDividerColor">#38383A</color>
+    <color name="bottomNavigationInactiveTextColor">#98989F</color>
+    <color name="bottomSheetPreviewPlayerShadowColor">#00000000</color>
+    <color name="navigationBarTitle">#FFFFFF</color>
+    <color name="navigationBarDivider">#26000000</color>
+    <color name="navigationBarEllipsisBackground">#3D787880</color>
+    <color name="navigationBarExpandedBackground">#000000</color>
+    <color name="navigationBarBlurAppendColor">#7C7C7C</color>
+    <!-- Header-only token: the mini player still needs the translucent blur above. -->
+    <color name="navigationBarHeaderBlurAppendColor">#000000</color>
+    <color name="searchBarBackground">#3D787880</color>
+    <color name="labels_tertiary">#99EBEBF5</color>
+    <color name="systemRed">#FF453A</color>
+    <color name="systemOrange">#FF9F0A</color>
+    <color name="systemYellow">#FFD60A</color>
+    <color name="systemGreen">#30D158</color>
+    <color name="systemMint">#63E6E2</color>
+    <color name="systemTeal">#40CBE0</color>
+    <color name="systemCyan">#64D2FF</color>
+    <color name="systemBlue">#0A84FF</color>
+    <color name="systemIndigo">#5E5CE6</color>
+    <color name="systemPurple">#BF5AF2</color>
+    <color name="systemPink">#FF375F</color>
+    <color name="systemBrown">#AC8E68</color>
+    <color name="defaultCoverBackground">#4D4E51</color>
+    <color name="defaultCoverForeground">#636366</color>
+    <color name="playlistAccentBackground">#101011</color>
+    <color name="playlistMusicIconTint">@color/onSurfaceColorInactive</color>
+    <color name="tabContainerColor">#54444444</color>
+    <color name="tabSelectedColor">#000000</color>
+    <color name="searchTabShadowColor">#4D000000</color>
+    <color name="searchTabShadowAmbientColor">#4D000000</color>
 </resources>

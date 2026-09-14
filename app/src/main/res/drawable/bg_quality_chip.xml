@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The badge's pill on the progress row. A soft translucent fill rather than the outline the badge
+    used under the artist line: on the progress row it sits between two timestamps, and a stroked box
+    there reads as a control rather than a label.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:radius="6dp" />
+    <solid android:color="#26FFFFFF" />
+</shape>

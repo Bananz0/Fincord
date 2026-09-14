@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The switch was invisible against the settings card: the theme's default track and thumb tints
+    resolve to colours this palette does not carry, so nothing was drawn. Stated explicitly.
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/accentColor" android:state_checked="true" />
+    <item android:color="@color/switch_track_off" />
+</selector>

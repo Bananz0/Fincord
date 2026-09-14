@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:top="@dimen/bottom_navigation_gradient_height">
+        <shape>
+            <solid
+                android:color="@color/bottomNavigationColor"
+                />
+        </shape>
+    </item>
+    <item
+        android:height="@dimen/bottom_navigation_gradient_height"
+        android:gravity="top">
+        <shape>
+            <gradient
+                android:startColor="@android:color/transparent"
+                android:endColor="@color/bottomNavigationColor"
+                android:type="linear"
+                android:angle="270"
+                />
+        </shape>
+    </item>
+</layer-list>

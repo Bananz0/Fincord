@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Keeps a large portrait screen album-art-first without turning the cover into a poster. -->
+    <dimen name="full_player_cover_max_width">560dp</dimen>
+    <!--
+        No cap on a phone: the control column is the whole width, so these three keep the player
+        exactly as it was. The sw600dp copies bind the column to the capped artwork's box.
+    -->
+    <dimen name="full_player_content_max_width">2000dp</dimen>
+    <dimen name="full_player_text_margin">36dp</dimen>
+    <dimen name="full_player_slider_margin">20dp</dimen>
     <dimen name="media_seekbar_progress_wavelength">27dp</dimen>
     <dimen name="media_seekbar_progress_amplitude">2.7dp</dimen>
     <dimen name="media_seekbar_progress_phase">8dp</dimen>
@@ -29,9 +38,55 @@
     <dimen name="mtrl_slider_widget_height" tools:override="true">21dp</dimen>
     <dimen name="mtrl_slider_track_side_padding" tools:override="true">0dp</dimen>
     <dimen name="bottom_sheet_height">56dp</dimen>
-    <dimen name="top_app_bar_height">132dp</dimen>
+    <dimen name="top_app_bar_height">110dp</dimen>
     <dimen name="preview_album_cover_start">24dp</dimen>
     <dimen name="full_cover_elevation">8dp</dimen>
     <dimen name="lyric_extra_line_height">3dp</dimen>
     <item name="top_divider_visibility" format="float" type="dimen">1.0</item>
+
+    <!-- ==== Ported from upstream Accord ==== -->
+    <dimen name="bottom_nav_height_raw">67dp</dimen>
+    <dimen name="bottom_nav_height">100dp</dimen>
+    <dimen name="bottom_nav_item_padding_bottom">8dp</dimen>
+    <dimen name="bottom_nav_item_padding_top">52dp</dimen>
+    <dimen name="preview_player_height">58dp</dimen>
+    <dimen name="splashscreen_icon_size">0dp</dimen>
+    <dimen name="bottom_panel_radius">16dp</dimen>
+    <dimen name="bottom_panel_shadow_radius">32dp</dimen>
+    <dimen name="toolbar_height">58dp</dimen>
+    <dimen name="divider_height_top_app_bar">0.3dp</dimen>
+    <dimen name="toolbar_margin_bottom_offset">29dp</dimen>
+    <dimen name="shrink_container_default_radius">0dp</dimen>
+    <dimen name="tablayout_height">40dp</dimen>
+    <dimen name="tablayout_bottom_margin">8dp</dimen>
+    <dimen name="scroller_width">36dp</dimen>
+    <dimen name="scroller_char_size">12sp</dimen>
+    <dimen name="full_cover_radius">14dp</dimen>
+    <dimen name="preview_player_horizontal_margin">12dp</dimen>
+    <dimen name="preview_player_max_width">840dp</dimen>
+    <dimen name="player_main_control_size">100dp</dimen>
+    <dimen name="player_skip_control_size">94dp</dimen>
+    <dimen name="player_main_control_icon_size">76dp</dimen>
+    <dimen name="player_skip_control_icon_size">64dp</dimen>
+    <dimen name="player_bottom_controls_margin">48dp</dimen>
+
+    <!-- The output picker's volume bar, matching the player's own volume row. -->
+    <dimen name="output_volume_slider_height">32dp</dimen>
+
+    <!--
+        One height for the whole list, chosen from the most detailed row in it.
+
+        Sizing each row to its own contents made a list of pills of three different heights, which
+        reads as three different kinds of control rather than one list. The taller row is the one
+        carrying "Bluetooth audio" and a codec badge, so when any destination shows those, every
+        destination is that tall and the extra space is simply space. The corner radius never
+        changes - a row that rounded differently because it happened to know more about itself was
+        the same mistake in another form.
+    -->
+    <dimen name="output_row_height_compact">46dp</dimen>
+    <dimen name="output_row_height_subtitle">54dp</dimen>
+    <dimen name="output_row_height_badge">68dp</dimen>
+
+    <dimen name="standard_side_padding">26.5dp</dimen>
+    <dimen name="bottom_navigation_gradient_height">33dp</dimen>
 </resources>

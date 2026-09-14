@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="output_picker_surface">#D91C1B1B</color>
+    <color name="output_picker_glass_tint">#52000000</color>
+    <color name="output_picker_outline">#4CFFFFFF</color>
+    <color name="output_picker_row">#20FFFFFF</color>
+    <color name="output_picker_row_pressed">#36FFFFFF</color>
+    <color name="output_picker_row_selected">#42FFFFFF</color>
+    <color name="output_picker_row_selected_pressed">#5AFFFFFF</color>
+    <!-- The row's volume fill is light in both themes, so the label over it is dark in
+         both. Only the unfilled half follows onSurfaceColor. -->
+    <color name="output_row_label_on_fill">#F2000000</color>
+    <color name="output_picker_radio_selected">#CC000000</color>
+
+</resources>

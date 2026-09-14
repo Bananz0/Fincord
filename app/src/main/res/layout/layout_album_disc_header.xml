@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    "Disc 1", "Disc 2" - the divider between the sides of a multi-disc record.
+
+    Heavier and higher contrast than the section headings elsewhere in the app, and deliberately
+    so: those label a list you are scanning, this one interrupts a list you are reading down, and
+    it has to be obvious that track 1 appearing again is a new disc rather than the list restarting.
+-->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/disc_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    android:paddingTop="22dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="8dp"
+    android:fontFamily="@font/inter_semibold"
+    android:includeFontPadding="false"
+    android:textColor="@color/onSurfaceColor"
+    android:textSize="18sp"
+    tools:text="Disc 1" />

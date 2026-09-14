@@ -1,0 +1,9 @@
+<!--
+    The surface behind a tappable row on the login screen. Matches the rounded, faintly-raised
+    treatment the rest of the app uses for cards rather than the platform's flat list rows.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/secondaryOverlayColor" />
+    <corners android:radius="14dp" />
+</shape>

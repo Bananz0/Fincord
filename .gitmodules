@@ -1,0 +1,7 @@
+[submodule "Cupertino"]
+	path = Cupertino
+	url = https://github.com/Bananz0/Cupertino.git
+	branch = fincord
+[submodule "libPhonograph/libPhonograph"]
+	path = libPhonograph/libPhonograph
+	url = https://github.com/FoedusProgramme/libPhonograph.git

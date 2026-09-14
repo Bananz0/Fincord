@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Quiet section labels, aligned with the row text rather than the leading glyph. -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="54dp"
+    android:layout_marginTop="13dp"
+    android:layout_marginEnd="14dp"
+    android:layout_marginBottom="5dp"
+    android:fontFamily="@font/inter_semibold"
+    android:includeFontPadding="false"
+    android:textColor="@color/onSurfaceColorInactive"
+    android:textSize="13sp" />

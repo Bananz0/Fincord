@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    Automix: two crossfading level ramps.
+
+    One track thinning out as another comes up, which is what a mixed transition is. Deliberately
+    not another pair of crossed arrows - shuffle already owns that shape in this row, and at 40dp
+    the two would be a coin toss. Built on the same 16x16 grid and centred with the same group
+    transform as ic_nowplaying_autoplay, so the four pills carry glyphs of one weight.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="38dp"
+    android:height="38dp"
+    android:viewportWidth="38"
+    android:viewportHeight="38">
+
+    <group
+        android:translateX="7.8"
+        android:translateY="7.4"
+        android:scaleX="1.4"
+        android:scaleY="1.45">
+
+        <!-- Falling: full at the left, gone by the right. -->
+        <path
+            android:fillColor="#FF000000"
+            android:fillType="nonZero"
+            android:pathData="
+                M0.75,1.6
+                L15.25,1.6
+                a0.75,0.75 0 0,1 0.28,1.45
+                L1.03,7.55
+                A0.75,0.75 0 0,1 0,6.85
+                L0,2.35
+                a0.75,0.75 0 0,1 0.75,-0.75
+                Z" />
+
+        <!-- Rising: the mirror of it, so the pair balances about the centre of the pill. -->
+        <path
+            android:fillColor="#FF000000"
+            android:fillType="nonZero"
+            android:pathData="
+                M15.25,14.4
+                L0.75,14.4
+                a0.75,0.75 0 0,1 -0.28,-1.45
+                L14.97,8.45
+                A0.75,0.75 0 0,1 16,9.15
+                L16,13.65
+                a0.75,0.75 0 0,1 -0.75,0.75
+                Z" />
+    </group>
+
+</vector>

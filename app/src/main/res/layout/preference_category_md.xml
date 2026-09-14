@@ -19,16 +19,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="24dp"
-    android:paddingTop="12dp">
+    android:paddingTop="16dp"
+    android:paddingBottom="8dp">
 
     <TextView
         android:id="@android:id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:textColor="?colorPrimary"
-        android:textFontWeight="600"
+        android:fontFamily="@font/inter_semibold"
+        android:includeFontPadding="false"
+        android:textAllCaps="true"
+        android:textColor="@color/onSurfaceColorInactive"
+        android:textSize="12sp"
         tools:text="Links" />
 
 </FrameLayout>

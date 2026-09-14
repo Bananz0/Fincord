@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Short screens cannot spend almost half their height on two stacked bottom bars. -->
+    <dimen name="bottom_nav_height_raw">56dp</dimen>
+    <dimen name="bottom_nav_height">56dp</dimen>
+    <dimen name="bottom_nav_item_padding_top">5dp</dimen>
+    <dimen name="bottom_nav_item_padding_bottom">3dp</dimen>
+    <dimen name="preview_player_height">48dp</dimen>
+    <dimen name="preview_player_horizontal_margin">12dp</dimen>
+
+    <dimen name="player_main_control_size">72dp</dimen>
+    <dimen name="player_skip_control_size">68dp</dimen>
+    <dimen name="player_main_control_icon_size">54dp</dimen>
+    <dimen name="player_skip_control_icon_size">46dp</dimen>
+    <dimen name="player_bottom_controls_margin">12dp</dimen>
+</resources>

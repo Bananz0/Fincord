@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The home screen's masthead - heading and the station banner carousel - as the first row of the feed
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/home_recommendations_title"
+        android:textColor="@color/onSurfaceColor"
+        android:fontFamily="@font/inter_bold"
+        android:textSize="22sp"
+        android:layout_marginTop="14dp"
+        android:layout_marginStart="22dp"
+        android:includeFontPadding="false" />
+
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/recommendations"
+        android:textColor="@color/onSurfaceColorInactive"
+        android:layout_marginStart="22dp"
+        android:textSize="15sp"
+        android:includeFontPadding="false" />
+
+    <uk.akane.accord.ui.components.TwoAxisRecyclerView
+        android:id="@+id/banner_carousel"
+        android:layout_width="match_parent"
+        android:layout_height="280dp"
+        android:layout_marginTop="12dp"
+        android:clipToPadding="false"
+        android:paddingStart="22dp"
+        android:paddingEnd="22dp"
+        android:overScrollMode="never" />
+
+</LinearLayout>

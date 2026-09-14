@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The signal path behind the player badge, on the same floating card as Play on.
+
+    Not a lookalike: the shape, the glass and the window are PlayerSheet's, and this is only what
+    goes inside it. Two sheets describing the same playback should be the same object.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_output_picker"
+    android:clipToOutline="true"
+    android:elevation="24dp"
+    android:foreground="@drawable/bg_output_picker_outline">
+
+    <ImageView
+        android:id="@+id/audio_quality_backdrop"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:importantForAccessibility="no"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="@id/audio_quality_content"
+        app:layout_constraintEnd_toEndOf="@id/audio_quality_content"
+        app:layout_constraintStart_toStartOf="@id/audio_quality_content"
+        app:layout_constraintTop_toTopOf="@id/audio_quality_content" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/output_picker_glass_tint"
+        android:importantForAccessibility="no"
+        app:layout_constraintBottom_toBottomOf="@id/audio_quality_content"
+        app:layout_constraintEnd_toEndOf="@id/audio_quality_content"
+        app:layout_constraintStart_toStartOf="@id/audio_quality_content"
+        app:layout_constraintTop_toTopOf="@id/audio_quality_content" />
+
+    <LinearLayout
+        android:id="@+id/audio_quality_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="14dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <View
+            android:layout_width="36dp"
+            android:layout_height="5dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/bg_output_picker_grabber"
+            android:importantForAccessibility="no" />
+
+        <TextView
+            android:id="@+id/audio_quality_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:fontFamily="@font/inter_semibold"
+            android:includeFontPadding="false"
+            android:textColor="@color/onSurfaceColor"
+            android:textSize="18sp"
+            tools:text="@string/music_quality_hires_lossless" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/inter_regular"
+            android:includeFontPadding="false"
+            android:text="@string/music_quality_sheet_subtitle"
+            android:textColor="@color/onSurfaceColorInactive"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:id="@+id/audio_quality_rows"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_output_picker_row"
+            android:orientation="vertical"
+            android:paddingVertical="2dp" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

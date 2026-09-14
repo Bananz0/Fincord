@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Full Player Layout -->
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/full_player"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <!--
+        The animated gradient backdrop, in two implementations of the same preference.
+
+        kawarp draws the Apple-style liquid cover: one AGSL RuntimeShader that domain-warps a
+        Kawase-blurred copy of the artwork and crossfades between covers on a track change. AGSL
+        only exists on API 33+, where the view below stays hidden; on 31-32 kawarp renders nothing
+        and FlowingGradientView takes over with the older four-layer field.
+    -->
+    <dev.kawarp.KawarpView
+        android:id="@+id/liquid_gradient"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <uk.akane.accord.ui.components.player.FlowingGradientView
+        android:id="@+id/mesh_gradient"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <uk.akane.cupertino.widget.special.BlendView
+        android:id="@+id/blend_view"
+        android:layout_width="170dp"
+        android:layout_height="170dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <!--
+        The column every control lines up inside.
+
+        On a phone this is the whole width and changes nothing. On a portrait tablet the artwork is
+        capped at @dimen/full_player_cover_max_width and centred, so a full-bleed row of controls
+        leaves the title, the scrubber and the transport buttons stranded far outside the artwork
+        they belong to. The column is capped to the artwork's own box instead, and the margins
+        measured from it land on the artwork's edges. `configureWideLayout` moves the column into
+        the right-hand pane, which carries every control anchored to it across in one move.
+    -->
+    <Space
+        android:id="@+id/content_column"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        app:layout_constraintWidth_max="@dimen/full_player_content_max_width"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <uk.akane.cupertino.widget.image.SimpleImageView
+        android:id="@+id/cover"
+        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="18dp"
+        app:drawable="@drawable/default_cover"
+        app:cornerRadius="@dimen/full_cover_radius"
+        android:elevation="24dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintWidth_max="@dimen/full_player_cover_max_width"
+        app:layout_constraintHeight_max="@dimen/full_player_cover_max_width"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/title"
+        style="@style/Widget.Accord.ActionPanel.FullPlayer.Cover.Shape"
+        />
+
+    <uk.akane.cupertino.widget.text.OverlayTextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter_semibold"
+        android:textSize="21sp"
+        android:includeFontPadding="false"
+        android:layout_marginTop="52dp"
+        android:text="@string/default_track"
+        android:maxLines="1"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_marginStart="@dimen/full_player_text_margin"
+        android:layout_marginEnd="16dp"
+        app:viewLayer="standard"
+        app:layout_constraintTop_toBottomOf="@id/cover"
+        app:layout_constraintStart_toStartOf="@id/content_column"
+        app:layout_constraintEnd_toStartOf="@id/star"
+        />
+
+    <uk.akane.cupertino.widget.text.OverlayTextView
+        android:id="@+id/subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter_regular"
+        android:textSize="21sp"
+        android:includeFontPadding="false"
+        android:text="@string/default_artist"
+        app:viewLayer="primary"
+        android:maxLines="1"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintStart_toStartOf="@id/title"
+        app:layout_constraintEnd_toEndOf="@id/title"
+        />
+
+    <!--
+        Lossless / Hi-Res Lossless / Dolby Atmos, read from the format the player actually selected,
+        or the codec name when Settings asks for that instead. Gone unless the current track earns
+        one, so a lossy stream shows nothing rather than an empty pill.
+
+        Sits centred on the timestamp row, between elapsed and remaining, which is where a listener
+        looks for it. Tapping it names the actual format.
+
+        Raised a hair above its siblings, because the play button is a 100dp square whose top edge
+        reaches up over this row: same-Z children are hit-tested back to front, the button is
+        declared later, and it was therefore swallowing every press aimed at the badge. Z ordering
+        decides touch dispatch as well as drawing, and no outline means the lift costs no shadow.
+        The two badges are a packed chain, so the bitrate sits beside the codec and a lone badge
+        still centres itself.
+    -->
+    <TextView
+        android:id="@+id/quality_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_quality_chip"
+        android:drawableStart="@drawable/ic_lossless_glyph"
+        android:drawablePadding="5dp"
+        android:elevation="1dp"
+        android:outlineProvider="none"
+        android:fontFamily="@font/inter_semibold"
+        android:includeFontPadding="false"
+        android:paddingHorizontal="9dp"
+        android:paddingVertical="3dp"
+        android:textColor="@color/onSurfaceColor"
+        android:drawableTint="@color/onSurfaceColor"
+        android:textSize="12sp"
+        android:visibility="gone"
+        tools:text="@string/music_quality_lossless"
+        tools:visibility="visible"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintTop_toTopOf="@id/current_timestamp"
+        app:layout_constraintBottom_toBottomOf="@id/current_timestamp"
+        app:layout_constraintStart_toStartOf="@id/content_column"
+        app:layout_constraintEnd_toStartOf="@id/bitrate_badge"
+        />
+
+    <!--
+        The second badge, shown only when Settings asks for codec and bitrate. Gone the rest of the
+        time, which collapses it out of the chain and leaves the first badge centred as before.
+    -->
+    <TextView
+        android:id="@+id/bitrate_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_quality_chip"
+        android:elevation="1dp"
+        android:outlineProvider="none"
+        android:fontFamily="@font/inter_semibold"
+        android:includeFontPadding="false"
+        android:layout_marginStart="6dp"
+        android:paddingHorizontal="9dp"
+        android:paddingVertical="3dp"
+        android:textColor="@color/onSurfaceColor"
+        android:textSize="12sp"
+        android:visibility="gone"
+        tools:text="1411 kbps"
+        tools:visibility="visible"
+        app:layout_constraintTop_toTopOf="@id/quality_badge"
+        app:layout_constraintBottom_toBottomOf="@id/quality_badge"
+        app:layout_constraintStart_toEndOf="@id/quality_badge"
+        app:layout_constraintEnd_toEndOf="@id/content_column"
+        />
+
+    <!--
+        Says what the track could be, when it is not that already.
+
+        Occupies the badge's exact place and shows only briefly. A capped stream has no badge -
+        AudioQuality reports what the decoder produced, and AAC is not lossless - so this is the
+        one moment the listener can be told the source is better than what they are hearing,
+        without a permanent label nagging about a setting they chose on purpose.
+    -->
+    <TextView
+        android:id="@+id/quality_available_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        android:fontFamily="@font/inter_semibold"
+        android:includeFontPadding="false"
+        android:paddingHorizontal="9dp"
+        android:paddingVertical="3dp"
+        android:textColor="@color/onSurfaceColorInactive"
+        android:textSize="12sp"
+        tools:alpha="1"
+        tools:text="@string/quality_lossless_available"
+        app:layout_constraintTop_toTopOf="@id/current_timestamp"
+        app:layout_constraintBottom_toBottomOf="@id/current_timestamp"
+        app:layout_constraintStart_toStartOf="@id/content_column"
+        app:layout_constraintEnd_toEndOf="@id/content_column"
+        />
+
+    <uk.akane.cupertino.widget.divider.OverlayDivider
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <uk.akane.cupertino.widget.slider.OverlaySlider
+        android:id="@+id/progressBar"
+        android:layout_width="0dp"
+        android:layout_height="28dp"
+        android:layout_marginHorizontal="@dimen/full_player_slider_margin"
+        android:layout_marginTop="32dp"
+        app:momentum="false"
+        app:resizeFactor="2.5"
+        app:layout_constraintTop_toBottomOf="@id/subtitle"
+        app:layout_constraintStart_toStartOf="@id/content_column"
+        app:layout_constraintEnd_toEndOf="@id/content_column"
+        />
+
+    <uk.akane.cupertino.widget.button.OverlayButton
+        android:id="@+id/list"
+        android:layout_height="48dp"
+        android:layout_width="48dp"
+        android:layout_marginBottom="@dimen/player_bottom_controls_margin"
+        app:iconSize="36dp"
+        app:viewLayer="primary"
+        app:icon="@drawable/ic_bulletin_select"
+        app:layout_constraintStart_toEndOf="@id/airplay"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/content_column"
+        />
+
+    <uk.akane.cupertino.widget.button.OverlayButton
+        android:id="@+id/airplay"
+        android:layout_height="48dp"
+        android:layout_width="48dp"
+        app:iconSize="36dp"
+        app:viewLayer="primary"
+        app:icon="@drawable/ic_airplay_radio"
+        app:layout_constraintStart_toEndOf="@id/karaoke"
+        app:layout_constraintEnd_toStartOf="@id/list"
+        app:layout_constraintTop_toTopOf="@id/list"
+        app:layout_constraintBottom_toBottomOf="@id/list"
+        />
+
+    <uk.akane.cupertino.widget.button.OverlayButton
+        android:id="@+id/karaoke"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/karaoke"
+        android:visibility="gone"
+        app:icon="@drawable/ic_karaoke_btn"
+        app:iconSize="36dp"
+        app:viewLayer="primary"
+        app:layout_constraintStart_toEndOf="@id/caption"
+        app:layout_constraintEnd_toStartOf="@id/airplay"
+        app:layout_constraintTop_toTopOf="@id/list"
+        app:layout_constraintBottom_toBottomOf="@id/list"
+        />
+
+    <!--
+        The connected output, shown in place of the AirPlay glyph whenever there is one. Two views
+        rather than swapping the button's icon: OverlayButton renders its icon through a bitmap it
+        builds at attach time and exposes no setter, and the device also needs a name under it.
+    -->
+    <ImageView
+        android:id="@+id/output_device_icon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:contentDescription="@string/output_device"
+        android:visibility="gone"
+        app:tint="@color/onSurfaceColor"
+        app:layout_constraintStart_toStartOf="@id/airplay"
+        app:layout_constraintEnd_toEndOf="@id/airplay"
+        app:layout_constraintTop_toTopOf="@id/airplay"
+        app:layout_constraintBottom_toBottomOf="@id/airplay"
+        />
+
+    <TextView
+        android:id="@+id/output_device_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:fontFamily="@font/inter_semibold"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:singleLine="true"
+        android:maxWidth="160dp"
+        android:textColor="@color/onSurfaceColorInactive"
+        android:textSize="13sp"
+        android:visibility="gone"
+        tools:text="Galaxy Buds3 Pro"
+        tools:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/airplay"
+        app:layout_constraintStart_toStartOf="@id/airplay"
+        app:layout_constraintEnd_toEndOf="@id/airplay"
+        />
+
+    <uk.akane.cupertino.widget.button.OverlayButton
+        android:id="@+id/caption"
+        android:layout_height="48dp"
+        android:layout_width="48dp"
+        app:iconSize="36dp"
+        app:viewLayer="primary"
+        app:icon="@drawable/ic_quote_select"
+        app:layout_constraintStart_toStartOf="@id/content_column"
+        app:layout_constraintEnd_toStartOf="@id/karaoke"
+        app:layout_constraintTop_toTopOf="@id/list"
+        app:layout_constraintBottom_toBottomOf="@id/list"
+        />
+
+    <TextView
+        android:id="@+id/karaoke_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_quality_chip"
+        android:fontFamily="@font/inter_semibold"
+        android:includeFontPadding="false"
+        android:paddingHorizontal="9dp"
+        android:paddingVertical="3dp"
+        android:textColor="@color/onSurfaceColor"
+        android:textSize="12sp"
+        android:visibility="gone"
+        tools:text="Separating vocals…"
+        tools:visibility="visible"
+        app:layout_constraintTop_toTopOf="@id/current_timestamp"
+        app:layout_constraintBottom_toBottomOf="@id/current_timestamp"
+        app:layout_constraintStart_toStartOf="@id/content_column"
+        app:layout_constraintEnd_toEndOf="@id/content_column"
+        />
+
+    <uk.akane.cupertino.widget.button.StarTransformButton
+        android:id="@+id/star"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="14dp"
+        app:layout_constraintTop_toTopOf="@id/ellipsis"
+        app:layout_constraintBottom_toBottomOf="@id/ellipsis"
+        app:layout_constraintEnd_toStartOf="@id/ellipsis"
+        />
+
+    <uk.akane.cupertino.widget.button.OverlayBackgroundButton
+        android:id="@+id/ellipsis"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:layout_constraintTop_toTopOf="@id/title"
+        app:layout_constraintBottom_toBottomOf="@id/subtitle"
+        app:layout_constraintEnd_toEndOf="@id/content_column"
+        android:layout_marginEnd="@dimen/full_player_text_margin"
+        app:icon="@drawable/ic_ellipsis"
+        app:iconSize="30dp"
+        />
+
+    <uk.akane.cupertino.widget.image.OverlayHintView
+        android:id="@+id/speaker_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/list"
+        app:layout_constraintStart_toStartOf="@id/title"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="-8dp"
+        app:icon="@drawable/ic_speaker_anim"
+        app:iconSize="28.5dp"
+        />
+
+    <uk.akane.cupertino.widget.image.OverlayHintView
+        android:id="@+id/speaker_full_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="-8dp"
+        app:layout_constraintTop_toTopOf="@id/speaker_hint"
+        app:layout_constraintBottom_toBottomOf="@id/speaker_hint"
+        app:layout_constraintEnd_toEndOf="@id/ellipsis"
+        app:icon="@drawable/ic_speaker_wave_3_anim"
+        app:iconSize="28.5dp"
+        />
+
+    <uk.akane.cupertino.widget.slider.OverlaySlider
+        android:id="@+id/volume_slider"
+        android:layout_width="0dp"
+        android:layout_height="32dp"
+        android:paddingVertical="4dp"
+        app:overshoot="true"
+        app:sidePadding="8dp"
+        android:layout_marginStart="-4dp"
+        android:layout_marginEnd="-4dp"
+        app:layout_constraintTop_toTopOf="@id/speaker_hint"
+        app:layout_constraintBottom_toBottomOf="@id/speaker_hint"
+        app:layout_constraintStart_toEndOf="@id/speaker_hint"
+        app:layout_constraintEnd_toStartOf="@id/speaker_full_hint"
+        />
+
+    <uk.akane.cupertino.widget.text.OverlayTextView
+        android:id="@+id/current_timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_duration"
+        android:fontFamily="@font/inter_semibold"
+        android:textSize="12.5sp"
+        android:layout_marginVertical="-16dp"
+        android:includeFontPadding="false"
+        android:letterSpacing="0.04"
+        app:viewLayer="secondary"
+        app:layout_constraintTop_toBottomOf="@id/progressBar"
+        app:layout_constraintStart_toStartOf="@id/title"
+        />
+
+    <uk.akane.cupertino.widget.text.OverlayTextView
+        android:id="@+id/left_timeStamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_duration"
+        android:fontFamily="@font/inter_semibold"
+        android:textSize="12.5sp"
+        android:includeFontPadding="false"
+        android:letterSpacing="0.04"
+        app:viewLayer="secondary"
+        app:layout_constraintTop_toTopOf="@id/current_timestamp"
+        app:layout_constraintEnd_toEndOf="@id/ellipsis"
+        />
+
+    <uk.akane.cupertino.widget.button.StateAnimatedVectorButton
+        android:id="@+id/main_control_btn"
+        android:layout_height="@dimen/player_main_control_size"
+        android:layout_width="@dimen/player_main_control_size"
+        app:iconSize="@dimen/player_main_control_icon_size"
+        android:foreground="@drawable/rp_round"
+        app:icon="@drawable/ic_play_anim"
+        app:iconState="@drawable/ic_pause_anim"
+        app:layout_constraintTop_toBottomOf="@id/progressBar"
+        app:layout_constraintBottom_toTopOf="@id/volume_slider"
+        app:layout_constraintStart_toStartOf="@id/content_column"
+        app:layout_constraintEnd_toEndOf="@id/content_column"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        />
+
+    <uk.akane.cupertino.widget.button.AnimatedVectorButton
+        android:id="@+id/forward_btn"
+        android:layout_height="@dimen/player_skip_control_size"
+        android:layout_width="@dimen/player_skip_control_size"
+        app:iconSize="@dimen/player_skip_control_icon_size"
+        app:icon="@drawable/ic_forward_anim"
+        android:foreground="@drawable/rp_round"
+        app:layout_constraintTop_toTopOf="@id/main_control_btn"
+        app:layout_constraintBottom_toBottomOf="@id/main_control_btn"
+        app:layout_constraintEnd_toEndOf="@id/content_column"
+        app:layout_constraintStart_toEndOf="@id/main_control_btn"
+        app:layout_constraintHorizontal_bias="0.20"
+        />
+
+    <uk.akane.cupertino.widget.button.AnimatedVectorButton
+        android:id="@+id/backward_btn"
+        android:layout_height="@dimen/player_skip_control_size"
+        android:layout_width="@dimen/player_skip_control_size"
+        android:rotation="180"
+        app:iconSize="@dimen/player_skip_control_icon_size"
+        app:icon="@drawable/ic_forward_anim"
+        android:foreground="@drawable/rp_round"
+        app:layout_constraintTop_toTopOf="@id/main_control_btn"
+        app:layout_constraintBottom_toBottomOf="@id/main_control_btn"
+        app:layout_constraintEnd_toStartOf="@id/main_control_btn"
+        app:layout_constraintStart_toStartOf="@id/content_column"
+        app:layout_constraintHorizontal_bias="0.80"
+        />
+
+    <uk.akane.accord.ui.components.player.FullPlayerToolbar
+        android:id="@+id/full_player_tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/queue_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintTop_toBottomOf="@id/full_player_tool_bar"
+        app:layout_constraintBottom_toTopOf="@id/progressBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <include
+            layout="@layout/layout_full_player_queue"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        layout="@layout/layout_full_player_lyrics"
+        />
+
+</merge>

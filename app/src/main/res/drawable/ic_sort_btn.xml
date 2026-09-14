@@ -1,0 +1,19 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="28dp"
+    android:height="28dp"
+    android:viewportWidth="28"
+    android:viewportHeight="28">
+  <path
+      android:pathData="M14,0L14,0A14,14 0,0 1,28 14L28,14A14,14 0,0 1,14 28L14,28A14,14 0,0 1,0 14L0,14A14,14 0,0 1,14 0z"
+      android:fillColor="@color/onSurfaceColor"
+      android:fillAlpha="0.05"/>
+  <path
+      android:pathData="M9.73,19.395H17.904C18.295,19.395 18.607,19.082 18.607,18.682C18.607,18.291 18.295,17.979 17.904,17.979H9.73C9.34,17.979 9.027,18.291 9.027,18.682C9.027,19.082 9.34,19.395 9.73,19.395Z"
+      android:fillColor="@color/accentColor"/>
+  <path
+      android:pathData="M8.236,15.4H19.398C19.789,15.4 20.102,15.088 20.102,14.697C20.102,14.307 19.789,13.994 19.398,13.994H8.236C7.846,13.994 7.533,14.307 7.533,14.697C7.533,15.088 7.846,15.4 8.236,15.4Z"
+      android:fillColor="@color/accentColor"/>
+  <path
+      android:pathData="M6.703,11.416H20.883C21.283,11.416 21.586,11.104 21.586,10.713C21.586,10.313 21.283,10 20.883,10H6.703C6.313,10 6,10.313 6,10.713C6,11.104 6.313,11.416 6.703,11.416Z"
+      android:fillColor="@color/accentColor"/>
+</vector>

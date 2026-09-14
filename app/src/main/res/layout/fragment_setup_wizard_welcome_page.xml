@@ -1,0 +1,106 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/logo"
+        style="@style/Widget.Accord.SetupWizard.WelcomePage.Icon"
+        android:layout_width="86dp"
+        android:layout_height="86dp"
+        app:layout_constraintVertical_bias="0.57"
+        android:src="@drawable/ic_launcher_foreground_variant"
+        android:background="@drawable/ic_launcher_background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/welcome_to"
+        app:layout_constraintVertical_chainStyle="packed"
+        />
+
+    <TextView
+        android:id="@+id/welcome_to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/welcome_to"
+        android:layout_marginTop="24dp"
+        style="@style/Widget.Accord.SetupWizard.WelcomePage.Title"
+        app:layout_constraintTop_toBottomOf="@id/logo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/app_name"
+        />
+
+    <TextView
+        android:id="@+id/app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Widget.Accord.SetupWizard.WelcomePage.Title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/welcome_to"
+        app:layout_constraintBottom_toTopOf="@id/introduction"
+        android:text="@string/app_name"
+        />
+
+    <TextView
+        android:id="@+id/introduction"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter_regular"
+        android:text="@string/welcome_page_introduction"
+        android:layout_marginHorizontal="@dimen/standard_side_padding"
+        android:layout_marginTop="24dp"
+        android:includeFontPadding="false"
+        android:textSize="18sp"
+        android:textColor="@color/onSurfaceColor"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_name"
+        app:layout_constraintBottom_toTopOf="@id/book_icon"
+        />
+
+    <ImageView
+        android:id="@+id/book_icon"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@drawable/ic_opened_books"
+        app:tint="@color/accentColor"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@id/subtitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/onSurfaceColorInactive"
+        android:fontFamily="@font/inter_regular"
+        android:textSize="12sp"
+        android:gravity="center"
+        android:text="@string/disclaimer"
+        android:layout_marginHorizontal="@dimen/standard_side_padding"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/link"
+        />
+
+    <uk.akane.accord.setupwizard.components.LinkTextView
+        android:id="@+id/link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/check_source_code"
+        android:textColor="@color/accentColor"
+        android:textSize="12sp"
+        android:fontFamily="@font/inter_regular"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="24dp"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -49,7 +49,10 @@ class FluidVelocityTracker(context: Context) : VelocityTracker {
     }
 
     override fun computeCurrentVelocity(units: Int, maxVelocity: Float) {
-        if (times.isEmpty()) {
+        // A single sample is not a movement, and calculateRecurrenceRelationVelocity rejects
+        // fewer than two points. A tap fast enough to produce only one is ordinary input, not a
+        // programming error, so it means "no velocity" rather than a crash.
+        if (times.size < 2) {
             calculatedVelocity = PointF(0f, 0f)
             return
         }
@@ -122,7 +125,11 @@ class FluidVelocityTracker(context: Context) : VelocityTracker {
                 currentVelocity!!
             }
         } else {
-            samples.first()
+            // One sample, so windowed(2) produced nothing to average - use it as-is. None at all
+            // means every pair of points shared a timestamp, which a touch delivered inside a
+            // single millisecond really does produce; there is no velocity to report, and calling
+            // first() on the empty list took the whole app down with it.
+            samples.firstOrNull() ?: 0f
         }
     }
 }

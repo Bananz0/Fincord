@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Quick Connect uses the same rounded sheet language as Play On and the queue. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_output_picker"
+    android:orientation="vertical"
+    android:paddingBottom="24dp">
+
+    <View
+        android:layout_width="36dp"
+        android:layout_height="5dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_output_picker_grabber" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="18dp"
+        android:fontFamily="@font/inter_bold"
+        android:includeFontPadding="false"
+        android:text="@string/jellyfin_quick_connect"
+        android:textColor="@color/onSurfaceColor"
+        android:textSize="28sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/inter_regular"
+        android:includeFontPadding="false"
+        android:text="@string/jellyfin_quick_connect_instructions"
+        android:textColor="@color/onSurfaceColorInactive"
+        android:textSize="15sp" />
+
+    <LinearLayout
+        android:id="@+id/code_boxes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="18dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <uk.akane.cupertino.widget.special.CupertinoActivityIndicatorView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:indeterminateTint="@color/onSurfaceColorInactive" />
+
+        <TextView
+            android:id="@+id/quick_connect_waiting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:fontFamily="@font/inter_regular"
+            android:text="@string/jellyfin_quick_connect_waiting"
+            android:textColor="@color/onSurfaceColorInactive"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/quick_connect_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="18dp"
+        android:background="?attr/selectableItemBackground"
+        android:fontFamily="@font/inter_semibold"
+        android:gravity="center"
+        android:text="@android:string/cancel"
+        android:textColor="@color/accentColor"
+        android:textSize="17sp" />
+</LinearLayout>

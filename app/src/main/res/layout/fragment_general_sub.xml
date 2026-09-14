@@ -26,6 +26,32 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:maxLines="2">
 
+            <!--
+                Album artwork. Hidden unless the screen is showing an album, since this fragment
+                also backs artists, genres, dates and playlists. Parallax so it drifts behind the
+                title as the list scrolls, matching the upstream Accord album page.
+            -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/sub_cover_frame"
+                android:layout_width="@dimen/sub_cover_size"
+                android:layout_height="@dimen/sub_cover_size"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/sub_cover_margin_top"
+                android:visibility="gone"
+                app:cardCornerRadius="@dimen/sub_cover_corner_radius"
+                app:cardElevation="0dp"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.6">
+
+                <ImageView
+                    android:id="@+id/sub_cover"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/category_albums"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_default_cover" />
+            </com.google.android.material.card.MaterialCardView>
+
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/topAppBar"
                 android:layout_width="match_parent"

@@ -81,7 +81,6 @@
 \nCopyright © 2024 Akane Foundation</string>
     <string name="playlist_favourite">お気に入り</string>
     <!-- Not translatable -->
-    <string name="app_name">Accord</string>
     <string name="now_playing">再生中</string>
     <string name="settings_content_based_color_summary">アルバムアートをベースとしたカラー生成を有効化します</string>
     <string name="settings_content_based_color">コンテンツベースのカラー生成</string>

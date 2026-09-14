@@ -17,6 +17,7 @@
 
 package org.akanework.gramophone.logic.ui
 
+
 import android.content.Context
 import android.text.TextUtils.TruncateAt
 import android.util.AttributeSet
@@ -35,7 +36,7 @@ import me.zhanghai.android.fastscroll.FastScroller
 import me.zhanghai.android.fastscroll.FastScrollerBuilder
 import me.zhanghai.android.fastscroll.FixOnItemTouchListenerRecyclerView
 import me.zhanghai.android.fastscroll.PopupTextProvider
-import org.akanework.gramophone.R
+import uk.akane.accord.R
 
 // Please don't try to understand it :) this abstracts away all the ugly details you rather not know
 class MyRecyclerView(context: Context, attributeSet: AttributeSet?, defStyleAttr: Int) :

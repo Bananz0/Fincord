@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Keep phone-sized controls on tablets instead of scaling chrome with the canvas. -->
+    <dimen name="bottom_nav_height_raw">72dp</dimen>
+    <dimen name="bottom_nav_height">72dp</dimen>
+    <dimen name="bottom_nav_item_padding_top">16dp</dimen>
+    <dimen name="bottom_nav_item_padding_bottom">6dp</dimen>
+    <dimen name="preview_player_height">64dp</dimen>
+    <dimen name="preview_player_horizontal_margin">24dp</dimen>
+    <!--
+        The bar spans the content it belongs to. The 840dp phone cap keeps a foldable's inner
+        screen from stretching a phone bar, but on a tablet it left a centred pill floating in the
+        middle of a 1280dp landscape canvas - the exact shape this layout exists to avoid.
+    -->
+    <dimen name="preview_player_max_width">2000dp</dimen>
+    <dimen name="standard_side_padding">40dp</dimen>
+
+    <!--
+        The artwork is capped at 560dp and centred, and it carries a 24dp margin of its own, so a
+        608dp column centres on the same axis with its edges exactly 24dp outside the artwork's.
+        Measuring the title, the scrubber, the transport row and the bottom actions 24dp inside
+        that column lands every one of them on the artwork's own left and right edges.
+    -->
+    <dimen name="full_player_content_max_width">608dp</dimen>
+    <dimen name="full_player_text_margin">24dp</dimen>
+    <dimen name="full_player_slider_margin">24dp</dimen>
+</resources>

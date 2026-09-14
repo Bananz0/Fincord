@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Play Next, after SF Symbol text.line.first.and.arrowtriangle.forward.
+
+    The triangle is not decoration: it marks the line the incoming track lands on, so pointing at
+    the first line means "in front of everything waiting". Play Later is the same drawing with the
+    triangle against the last line, which is what makes the pair legible as one idea.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#FFFFFF">
+    <!-- Marks the first line: this is where the track goes. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M2.2,1.4L7.0,4.35a0.78,0.78 0 0 1 0,1.3L2.2,8.6a0.72,0.72 0 0 1 -1.1,-0.62V2.02A0.72,0.72 0 0 1 2.2,1.4z" />
+    <!-- The first line, set in to leave the triangle room. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M9.9,3.9h11.9a1.1,1.1 0 0 1 0,2.2H9.9a1.1,1.1 0 0 1 0,-2.2z" />
+    <!-- Everything already in the queue. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M2.2,10.4h19.6a1.1,1.1 0 0 1 0,2.2H2.2a1.1,1.1 0 0 1 0,-2.2z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M2.2,15.1h19.6a1.1,1.1 0 0 1 0,2.2H2.2a1.1,1.1 0 0 1 0,-2.2z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M2.2,19.8h19.6a1.1,1.1 0 0 1 0,2.2H2.2a1.1,1.1 0 0 1 0,-2.2z" />
+</vector>

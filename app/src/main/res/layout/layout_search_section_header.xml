@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    A section heading in the search results - Artists, Albums, Songs.
+
+    Same weight and colour as the settings section headers, so the two screens read as the same
+    app rather than as two lists that happen to have titles.
+-->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/section_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingTop="18dp"
+    android:paddingBottom="6dp"
+    android:fontFamily="@font/inter_semibold"
+    android:includeFontPadding="false"
+    android:letterSpacing="0.06"
+    android:textAllCaps="true"
+    android:textColor="@color/onSurfaceColorInactive"
+    android:textSize="12sp"
+    tools:text="Albums" />

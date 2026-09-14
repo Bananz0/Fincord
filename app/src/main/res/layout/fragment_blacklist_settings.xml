@@ -1,78 +1,87 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  ~     Copyright (C) 2024 Akane Foundation
-  ~
-  ~     This program is free software: you can redistribute it and/or modify
-  ~     it under the terms of the GNU General Public License as published by
-  ~     the Free Software Foundation, either version 3 of the License, or
-  ~     (at your option) any later version.
-  ~
-  ~     This program is distributed in the hope that it will be useful,
-  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~     GNU General Public License for more details.
-  ~
-  ~     You should have received a copy of the GNU General Public License
-  ~     along with this program.  If not, see <https://www.gnu.org/licenses/>.
-  -->
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Hidden music, in the same shape as every other settings screen.
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    It used to be a CoordinatorLayout with a collapsing Material toolbar - the only screen in the
+    app still built that way - so it had a bare back arrow where everything else has "‹ Settings",
+    and naked rows where everything else has a grouped card.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/settings_background">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbarlayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/contrast_colorBackground"
-        app:liftOnScroll="false">
-
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsingtoolbar"
-            style="?attr/collapsingToolbarLayoutMediumStyle"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/top_app_bar_height"
-            android:background="@color/contrast_colorBackground"
-            app:collapsedTitleTextAppearance="@style/TextAppearance.App.TitleLarge"
-            app:collapsedTitleTextColor="@color/contrast_colorOnSurface"
-            app:contentScrim="@android:color/transparent"
-            app:expandedTitleMarginStart="24dp"
-            app:expandedTitleTextAppearance="@style/TextAppearance.App.HeadlineLarge"
-            app:expandedTitleTextColor="@color/contrast_colorOnSurface"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-            app:title="@string/settings_blacklist">
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/topAppBar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/contrast_colorBackground"
-                android:elevation="0dp"
-                android:paddingStart="6dp"
-                android:paddingEnd="8dp"
-                app:layout_collapseMode="pin"
-                app:navigationIcon="@drawable/ic_arrow_back"
-                app:navigationIconTint="@color/contrast_themeColor" />
-
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-        <com.google.android.material.divider.MaterialDivider
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
-            app:dividerColor="@color/contrast_colorBackgroundContainer"
-            app:dividerThickness="0.5dp" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <org.akanework.gramophone.logic.ui.MyRecyclerView
+    <!-- Content is declared first so the collapsing navigation surface always paints above it. -->
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:clipToPadding="false"
-        android:paddingTop="4dp"
-        android:scrollbars="none"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:paddingHorizontal="22dp"
+        android:paddingBottom="@dimen/bottom_nav_height"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <uk.akane.accord.ui.components.NavigationBar
+        android:id="@+id/navigation_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hasLargeMenuItems="false"
+        app:hasReturnButton="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:returnButtonText="@string/settings"
+        app:title="@string/settings_blacklist_folder">
+
+        <!--
+            NavigationBar owns this child so the title and search field collapse as one surface.
+            Keeping the field as a sibling left it at its original constraint position while the
+            bar translated upward, which made the two controls pass through each other.
+        -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/blacklist_filter_container"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:layout_marginHorizontal="22dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/search_bar_background">
+
+            <ImageView
+                android:id="@+id/blacklist_filter_icon"
+                android:layout_width="19dp"
+                android:layout_height="19dp"
+                android:layout_marginStart="10dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_magnifying_glass"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/labels_tertiary" />
+
+            <EditText
+                android:id="@+id/blacklist_filter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="16dp"
+                android:autofillHints=""
+                android:background="@null"
+                android:fontFamily="@font/inter_medium"
+                android:hint="@string/blacklist_filter_hint"
+                android:inputType="text"
+                android:singleLine="true"
+                android:textColor="@color/onSurfaceColor"
+                android:textColorHint="@color/labels_tertiary"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/blacklist_filter_icon"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </uk.akane.accord.ui.components.NavigationBar>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

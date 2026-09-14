@@ -17,6 +17,7 @@
 
 package org.akanework.gramophone.ui
 
+
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.graphics.Typeface
@@ -25,13 +26,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
+import uk.akane.accord.ui.components.NoToast as Toast
 import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
-import org.akanework.gramophone.BuildConfig
-import org.akanework.gramophone.R
+import uk.akane.accord.BuildConfig
+import uk.akane.accord.R
 import org.akanework.gramophone.logic.enableEdgeToEdgePaddingListener
 import java.text.SimpleDateFormat
 import java.util.Calendar

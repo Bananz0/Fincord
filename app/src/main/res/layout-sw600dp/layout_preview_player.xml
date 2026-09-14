@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/preview_player_height"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <!-- Tablet now-playing stays a real transport bar: transport on the left, identity in the
+         middle, and the two destination modes on the right. -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/previous_btn"
+        style="@style/BottomNavigation.BottomSheet.ActionButton.Preview"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:contentDescription="@string/player_previous"
+        android:rotation="180"
+        app:icon="@drawable/ic_prop_next"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/control_btn"
+        style="@style/BottomNavigation.BottomSheet.ActionButton.Preview"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:contentDescription="@string/player_play_pause"
+        app:icon="@drawable/ic_prop_play"
+        app:iconSize="20dp"
+        app:layout_constraintBottom_toBottomOf="@id/previous_btn"
+        app:layout_constraintStart_toEndOf="@id/previous_btn"
+        app:layout_constraintTop_toTopOf="@id/previous_btn" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/next_btn"
+        style="@style/BottomNavigation.BottomSheet.ActionButton.Preview"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:contentDescription="@string/player_next"
+        app:icon="@drawable/ic_prop_next"
+        app:layout_constraintBottom_toBottomOf="@id/control_btn"
+        app:layout_constraintStart_toEndOf="@id/control_btn"
+        app:layout_constraintTop_toTopOf="@id/control_btn" />
+
+    <uk.akane.cupertino.widget.image.SimpleImageView
+        android:id="@+id/preview_cover"
+        style="@style/Widget.Accord.BottomNavigation.BottomSheet.Preview.Cover"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="10dp"
+        app:cornerRadius="4dp"
+        app:drawable="@drawable/default_cover"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/next_btn"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/inter_medium"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:text="@string/default_track"
+        android:textColor="@color/onSurfaceColor"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@id/preview_subtitle"
+        app:layout_constraintEnd_toStartOf="@id/preview_ellipsis_btn"
+        app:layout_constraintStart_toEndOf="@id/preview_cover"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/preview_subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:fontFamily="@font/inter_regular"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:textColor="@color/onSurfaceColorInactive"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/title"
+        app:layout_constraintStart_toStartOf="@id/title"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        tools:text="Artist" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/preview_ellipsis_btn"
+        style="@style/BottomNavigation.BottomSheet.ActionButton.Preview"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/player_more"
+        app:icon="@drawable/ic_ellipsis"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/preview_lyrics_btn"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/preview_lyrics_btn"
+        style="@style/BottomNavigation.BottomSheet.ActionButton.Preview"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/player_lyrics"
+        app:icon="@drawable/ic_quote"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/preview_queue_btn"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/preview_queue_btn"
+        style="@style/BottomNavigation.BottomSheet.ActionButton.Preview"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/queue"
+        app:icon="@drawable/ic_bulletin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</merge>

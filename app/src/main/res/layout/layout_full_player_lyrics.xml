@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <!--
+        fel_size_bottom was 200dp, which faded out the line coming next - one of the three that
+        carry the song. 72dp softens the edge without hiding a line.
+    -->
+    <uk.akane.accord.ui.components.FadingVerticalEdgeLayout
+        android:id="@+id/fading"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:fel_edge="top|bottom"
+        app:fel_size_bottom="72dp"
+        app:fel_size_top="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/full_player_tool_bar">
+
+        <uk.akane.accord.ui.components.scroll.FastScrollerNestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <uk.akane.accord.ui.components.lyrics.LyricsView
+                android:id="@+id/lyrics_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </uk.akane.accord.ui.components.scroll.FastScrollerNestedScrollView>
+
+    </uk.akane.accord.ui.components.FadingVerticalEdgeLayout>
+
+    <!-- Show this layout when it's ready for production env-->
+    <Button
+        android:id="@+id/lyrics"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</merge>

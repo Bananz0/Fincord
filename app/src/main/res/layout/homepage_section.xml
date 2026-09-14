@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="28dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/section_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:maxLines="2"
+        android:textColor="@color/contrast_colorOnSurface"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <!--
+        The line naming what is in the row - "kwn, FLO, Coco Jones" - which is what makes a row of
+        covers legible without tapping into it. Gone when a section has nothing to add.
+    -->
+    <TextView
+        android:id="@+id/section_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="24dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textColor="@color/contrast_colorOnSurfaceSecondary"
+        android:textSize="14sp" />
+
+    <uk.akane.accord.ui.components.TwoAxisRecyclerView
+        android:id="@+id/section_items"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp" />
+
+</LinearLayout>

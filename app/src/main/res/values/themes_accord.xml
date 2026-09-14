@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Theme from the upstream Accord UI.
+
+    Kept separate from themes.xml (which still defines Theme.Gramophone) so the two can coexist
+    while screens are ported across one at a time. The interesting parts of the upstream look are
+    the SF Pro type ramp and the accent colour rather than a large style hierarchy - upstream
+    defines only a handful of styles and does the rest inline in its layouts.
+-->
+<resources>
+
+    <!--
+        Base.Theme.Accord and Theme.Accord used to live here. They now come from upstream's own
+        themes.xml, merged into this app's, so only the two bottom-navigation styles this fork adds
+        on top remain.
+    -->
+    <style name="Widget.Accord.BottomNavigation.LabelText" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:fontFamily">@font/sf_pro_medium</item>
+        <item name="fontFamily">@font/sf_pro_medium</item>
+    </style>
+
+    <style name="Widget.Accord.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:minHeight">@dimen/bottom_nav_height</item>
+        <item name="elevation">0dp</item>
+        <item name="itemIconTint">@color/cl_bottom_nav_label</item>
+        <item name="itemPaddingBottom">@dimen/bottom_nav_item_padding_bottom</item>
+        <item name="itemPaddingTop">@dimen/bottom_nav_item_padding_top</item>
+        <item name="itemRippleColor">@android:color/transparent</item>
+        <item name="itemTextAppearanceActive">@style/Widget.Accord.BottomNavigation.LabelText</item>
+        <item name="itemTextAppearanceInactive">@style/Widget.Accord.BottomNavigation.LabelText</item>
+        <item name="itemTextColor">@color/cl_bottom_nav_label</item>
+        <item name="labelVisibilityMode">labeled</item>
+    </style>
+
+</resources>

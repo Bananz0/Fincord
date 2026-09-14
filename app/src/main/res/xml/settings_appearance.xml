@@ -32,12 +32,102 @@
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
 
+        <!--
+            Off by default. It was declared as on, but nothing ever read it, so no installed copy
+            of the app has actually been immersive; honouring that stored default now would hide
+            the system bars on every existing device the first time this build runs.
+        -->
         <SwitchPreferenceCompat
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="immersive_mode"
             android:layout="@layout/preference_switch"
-            android:summary="Hide system bars for a fullscreen experience"
-            android:title="Immersive Mode"
+            android:summary="@string/settings_immersive_mode_summary"
+            android:title="@string/settings_immersive_mode"
+            android:widgetLayout="@layout/preference_switch_widget"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="backgroundless_status_bar"
+            android:layout="@layout/preference_switch"
+            android:summary="@string/settings_backgroundless_status_bar_summary"
+            android:title="@string/settings_backgroundless_status_bar"
+            android:widgetLayout="@layout/preference_switch_widget"
+            app:iconSpaceReserved="false" />
+
+        <!--
+            The browsing screens stay upright on a phone regardless; this is only about the
+            expanded player, which has a landscape arrangement worth turning to. Off by default,
+            where the player follows the system's own auto-rotate setting.
+        -->
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="rotate_now_playing"
+            android:layout="@layout/preference_switch"
+            android:summary="@string/settings_rotate_now_playing_summary"
+            android:title="@string/settings_rotate_now_playing"
+            android:widgetLayout="@layout/preference_switch_widget"
+            app:iconSpaceReserved="false" />
+
+        <!--
+            What the badge over the timestamp row says, and whether it stays. "Lossless" is a claim
+            about the file; "FLAC · 1411 kbps" is the measurement behind it, and either can be the
+            one a listener wants on screen.
+        -->
+        <DropDownPreference
+            android:defaultValue="label"
+            android:entries="@array/quality_badge_content_entries"
+            android:entryValues="@array/quality_badge_content_values"
+            android:key="quality_badge_content"
+            android:layout="@layout/preference_dropdown_md"
+            android:title="@string/settings_quality_badge_content"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="output_codec_badge"
+            android:layout="@layout/preference_switch"
+            android:summary="@string/settings_output_codec_badge_summary"
+            android:title="@string/settings_output_codec_badge"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="quality_badge_flash"
+            android:layout="@layout/preference_switch"
+            android:summary="@string/settings_quality_badge_flash_summary"
+            android:title="@string/settings_quality_badge_flash"
+            android:widgetLayout="@layout/preference_switch_widget"
+            app:iconSpaceReserved="false" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="automatic_lyrics_translation"
+            android:layout="@layout/preference_switch"
+            android:summary="@string/settings_automatic_lyrics_translation_summary"
+            android:title="@string/settings_automatic_lyrics_translation"
+            android:widgetLayout="@layout/preference_switch_widget"
+            app:iconSpaceReserved="false" />
+
+        <SeekBarPreference
+            android:defaultValue="0"
+            android:key="lyrics_offset_ms"
+            android:layout="@layout/preference_seekbar"
+            android:max="1000"
+            android:summary="@string/settings_lyrics_offset_summary"
+            android:title="@string/settings_lyrics_offset"
+            app:iconSpaceReserved="false"
+            app:min="-1000"
+            app:seekBarIncrement="10"
+            app:showSeekBarValue="true" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="settings_ui_mesh_gradient"
+            android:layout="@layout/preference_switch"
+            android:summary="@string/settings_ui_mesh_gradient_summary"
+            android:title="@string/settings_ui_mesh_gradient"
             android:widgetLayout="@layout/preference_switch_widget"
             app:iconSpaceReserved="false" />
 

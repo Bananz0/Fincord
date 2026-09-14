@@ -9,3 +9,26 @@
 .cxx
 local.properties
 package.properties
+keystore.properties
+*.jks
+*.keystore
+# The wrapper module around the libPhonograph submodule has no .gitignore of its own.
+/libPhonograph/build
+# A 142 MB apktool/jadx dump of the Accord build whose screens are being ported in. Kept locally as
+# a reference for the parts that exist nowhere in source form; far too large to belong in git.
+/accord_new_ui_and_functionality
+# Reverse-engineered reference for Accord-2.0-preview-26082508.apk. The APK is decoded locally for
+# implementation comparison only; generated resources/sources are intentionally not versioned.
+/accord_apk_26082508
+/automix/build
+
+# On-device debugging artefacts: screenshots, uiautomator dumps, logcat captures and the
+# odd pulled APK or database, all written to the repo root while chasing UI and playback
+# bugs. They are evidence for one afternoon, not source, and there are several hundred of
+# them. Anything worth keeping gets a name and a home rather than living here.
+/*.png
+/*.xml
+/*.txt
+/*.mp4
+/*.apk
+/*.db

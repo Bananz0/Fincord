@@ -1,0 +1,71 @@
+# Builds installable APKs for the UI port branch.
+#
+# Separate from android.yml on purpose. That workflow builds assembleRelease and signs it from
+# repository secrets; no signing secrets are configured here, so its output would be unsigned and
+# refuse to install. A debug build is signed with a key the runner generates, so it can be installed
+# straight off the Actions run.
+#
+# It also exists because uploading a release asset from the development machine fails - something on
+# that network aborts large uploads to uploads.github.com - so the artifacts are produced here
+# instead.
+name: Accord UI debug build
+
+on:
+  push:
+    branches: [ "feat/accord-ui" ]
+    paths-ignore:
+      - ".idea/"
+      - "fastlane/"
+      - ".gitignore"
+      - "*.md"
+      - "LICENSE"
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build debug APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # Cupertino and libPhonograph are submodules and nothing compiles without them.
+          submodules: recursive
+
+      # 21, not 17: misc:audiofxstub targets Java 21, and hificore's native build needs a JDK
+      # newer than the one android.yml pins.
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      # Gitignored, so it has to be written here or the build script fails reading releaseType.
+      - name: Set release type
+        run: echo releaseType=CI > package.properties
+
+      - name: Build with Gradle
+        run: ./gradlew :app:assembleDebug
+
+      - name: Name the artifacts
+        run: |
+          echo "APK_ARM64=$(find app/build/outputs/apk/debug -name '*-arm64-v8a-*.apk')" >> $GITHUB_ENV
+          echo "APK_UNIVERSAL=$(find app/build/outputs/apk/debug -name '*-universal-*.apk')" >> $GITHUB_ENV
+          echo "BUILD_NAME=Accord-accord-ui-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Upload arm64-v8a apk
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.BUILD_NAME }}-arm64-v8a
+          path: ${{ env.APK_ARM64 }}
+          compression-level: 9
+
+      - name: Upload universal apk
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.BUILD_NAME }}-universal
+          path: ${{ env.APK_UNIVERSAL }}
+          compression-level: 9

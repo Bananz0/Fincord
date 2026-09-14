@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    One settings row: title, optional subtitle, and either a chevron (opens something) or a switch
+    (toggles something).
+
+    The text block and the accessory are both centred against a fixed minimum height rather than
+    stacked with padding, so a row carrying a switch is exactly as tall as one carrying a chevron.
+    Sizing it by content made the toggle rows visibly taller than the rest.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:minHeight="54dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="14dp"
+        android:paddingVertical="6dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/row_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_regular"
+                android:includeFontPadding="false"
+                android:textColor="@color/onSurfaceColor"
+                android:textSize="16sp"
+                tools:text="Scrobble to Last.fm" />
+
+            <TextView
+                android:id="@+id/row_summary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/inter_regular"
+                android:includeFontPadding="false"
+                android:textColor="@color/onSurfaceColorInactive"
+                android:textSize="13sp"
+                android:visibility="gone"
+                tools:text="Not connected"
+                tools:visibility="visible" />
+
+        </LinearLayout>
+
+        <!-- Fixed width so the text column ends in the same place whichever accessory is used. -->
+        <FrameLayout
+            android:id="@+id/row_accessory"
+            android:layout_width="52dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp">
+
+            <ImageView
+                android:id="@+id/row_chevron"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_chevron_small"
+                app:tint="@color/onSurfaceColorInactive" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/row_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:clickable="false"
+                android:focusable="false"
+                android:textOff=""
+                android:textOn=""
+                android:visibility="gone"
+                app:showText="false"
+                app:thumbTint="@color/cl_settings_switch_thumb"
+                app:trackTint="@color/cl_settings_switch_track"
+                app:trackTintMode="src_in" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/row_divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginStart="14dp"
+        android:alpha="0.5"
+        android:background="@color/bottomNavigationDividerColor" />
+
+</LinearLayout>

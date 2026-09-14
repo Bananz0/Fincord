@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--
+        Columns in a collection grid. Driven by the window's current width, not by the device's
+        smallest one, so a rotation and a resized window both re-derive it: a card stays around
+        170-200dp wide everywhere instead of a phone's two columns stretching across a tablet.
+    -->
+    <integer name="browse_grid_columns">2</integer>
     <integer name="filter_default_sec">60</integer>
     <integer name="round_corner_radius">14</integer>
 </resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+        PLAY_MUSIC is not a current Android App Actions BII. Media playback semantics come from
+        Fincord's Media3 MediaLibrarySession; GET_THING is the supported discovery capability and
+        hands the user's query to the app's real search screen.
+    -->
+    <capability android:name="actions.intent.GET_THING">
+        <intent>
+            <url-template android:value="fincord://search{?query}" />
+            <parameter
+                android:name="thing.name"
+                android:key="query" />
+        </intent>
+        <intent>
+            <url-template android:value="fincord://search" />
+        </intent>
+    </capability>
+</shortcuts>

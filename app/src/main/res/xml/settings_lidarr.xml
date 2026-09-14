@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:layout="@layout/preference_category_md"
+        android:title="@string/lidarr_category_server">
+
+        <Preference
+            android:key="lidarr_server"
+            android:layout="@layout/preference_basic"
+            android:summary="@string/lidarr_server_summary"
+            android:title="@string/lidarr_server"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:layout="@layout/preference_category_md"
+        android:title="@string/lidarr_category_defaults">
+
+        <Preference
+            android:key="lidarr_root_folder"
+            android:layout="@layout/preference_basic"
+            android:title="@string/lidarr_root_folder"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="lidarr_quality_profile"
+            android:layout="@layout/preference_basic"
+            android:title="@string/lidarr_quality_profile"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            android:key="lidarr_metadata_profile"
+            android:layout="@layout/preference_basic"
+            android:title="@string/lidarr_metadata_profile"
+            app:iconSpaceReserved="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

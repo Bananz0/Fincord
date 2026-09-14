@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A standalone Bluetooth speaker: a cabinet with a tweeter above a woofer. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M6.5,2h11a2.5,2.5 0 0,1 2.5,2.5v15a2.5,2.5 0 0,1 -2.5,2.5h-11a2.5,2.5 0 0,1 -2.5,-2.5v-15a2.5,2.5 0 0,1 2.5,-2.5ZM10.4,6.6a1.6,1.6 0 1,0 3.2,0a1.6,1.6 0 1,0 -3.2,0ZM8.5,15.2a3.5,3.5 0 1,0 7,0a3.5,3.5 0 1,0 -7,0Z" />
+
+</vector>

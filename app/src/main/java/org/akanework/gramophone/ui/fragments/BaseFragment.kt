@@ -17,26 +17,25 @@
 
 package org.akanework.gramophone.ui.fragments
 
+
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.transition.MaterialSharedAxis
-import org.akanework.gramophone.R
-import org.akanework.gramophone.ui.MainActivity
+import uk.akane.accord.R
 
 /**
  * BaseFragment:
- *   It is a base fragment for all main fragments that
- * can appear in MainActivity's FragmentContainer.
- *   It creates material transitions easily and also make
- * overlapping colors more convenient. It can also manage
- * whether to show up bottom's mini player or not.
+ *   The base for the settings screens, which are the last fragments still hosted the old way.
+ *   It creates material transitions easily and also makes overlapping colors more convenient.
+ *
+ * The `wantsPlayer` flag it used to carry is gone with the old shell: Accord's player is a floating
+ * panel owned by its own activity, not a bottom sheet a fragment can ask to show or hide.
  *
  * @author AkaneTan, nift4
- * @see MainActivity
  */
-abstract class BaseFragment(val wantsPlayer: Boolean? = null) : Fragment() {
+abstract class BaseFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,12 +58,4 @@ abstract class BaseFragment(val wantsPlayer: Boolean? = null) : Fragment() {
         )
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (hidden) return
-        // see registerFragmentLifecycleCallbacks in MainActivity
-        if (wantsPlayer != null) {
-            (requireActivity() as MainActivity).playerBottomSheet.visible = wantsPlayer
-        }
-    }
 }

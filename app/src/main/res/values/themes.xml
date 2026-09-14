@@ -11,6 +11,20 @@
         <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="popupMenuBackground">@drawable/popup_background</item>
+        <!-- Replace Android's bright yellow autofill marker with a quiet Accord accent wash. -->
+        <item name="android:autofilledHighlight">@drawable/autofill_highlight</item>
+
+        <!--
+            Typography and accent from the upstream Accord UI.
+
+            Applied onto this Material3 theme rather than adopting upstream's Theme.Accord
+            wholesale: that one descends from MaterialComponents (M2), and this app uses M3
+            widgets throughout (bottom sheets, alert dialogs, the M3 colour attributes below),
+            which would fail to inflate against an M2 parent.
+        -->
+        <item name="android:fontFamily">@font/sf_pro_regular</item>
+        <item name="fontFamily">@font/sf_pro_regular</item>
+        <item name="colorAccent">@color/accentColor</item>
 
         <!-- Fallback -->
         <item name="colorPrimary">@color/md_theme_primary</item>
@@ -173,4 +187,48 @@
 
     <style name="Theme.Splash" parent="Day.Theme.Splash" />
 
+    <!-- ==== Ported from upstream Accord ==== -->
+    <style name="Base.Theme.Accord" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        
+        
+        <item name="android:colorBackground">@color/surfaceColor</item>
+        <item name="colorAccent">@color/accentColor</item>
+        <item name="android:spotShadowAlpha">0.3</item>
+        <!--
+            Upstream's theme is MaterialComponents-based, which predates these two Material 3
+            attributes. The settings screens' layouts ask for them, and inflating a preference row
+            under this theme died with "Failed to resolve attribute" until they were defined. Mapped
+            onto Accord's own palette so the settings match the rest of the app.
+        -->
+        <item name="colorOnSurface">@color/onSurfaceColor</item>
+        <item name="colorOnSurfaceVariant">@color/onSurfaceColorInactive</item>
+        <!-- Preference category headers take their colour from here, and were coming out in
+             Material's default purple against an otherwise red app. -->
+        <item name="colorPrimary">@color/accentColor</item>
+    </style>
+    <style xmlns:ns0="http://schemas.android.com/tools" name="Theme.Accord.Splash" parent="Theme.SplashScreen.IconBackground">
+        <!-- Android 12+ takes the splash colour from windowSplashScreenBackground, not
+             android:windowBackground. Set both so every supported Android version gets the same
+             deliberate red instead of inheriting a dynamic/pink surface colour. -->
+        <item name="android:windowBackground">@color/systemRed</item>
+        <item name="windowSplashScreenBackground">@color/systemRed</item>
+        <item name="postSplashScreenTheme">@style/Theme.Accord</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_fincord</item>
+        <item name="android:windowSplashScreenBehavior" ns0:targetApi="tiramisu">icon_preferred</item>
+    </style>
+    <style name="Theme.Accord" parent="Base.Theme.Accord"/>
+
+    <!--
+        The output picker's sheet. Transparent window and no dim-behind default, so the rounded
+        background in the layout is the sheet rather than sitting inside a grey Material one.
+    -->
+    <style name="Theme.Accord.OutputPicker" parent="Theme.MaterialComponents.DayNight.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.Accord.OutputPickerSheet</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="Widget.Accord.OutputPickerSheet" parent="Widget.MaterialComponents.BottomSheet">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+    </style>
 </resources>

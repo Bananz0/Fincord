@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dark-mode overrides for the upstream Accord colour tokens. -->
+<resources>
+    <color name="addMusicHeaderBackground">#1c1c1e</color>
+    <color name="frontShadeColor">#66000000</color>
+    <color name="onSurfaceColorSolid">#ffffff</color>
+    <color name="popupMenuColorDodge">#8c8c8c</color>
+    <color name="popupMenuLargeSeparator">#29000000</color>
+    <color name="popupMenuPlain">#d1252525</color>
+    <color name="popupMenuSeparator">#b3808080</color>
+    <color name="red">#ff453a</color>
+    <color name="settings_background">@color/surfaceColor</color>
+    <color name="settings_card_background">@color/searchBarBackground</color>
+    <color name="switch_track_off">#3d3d40</color>
+</resources>

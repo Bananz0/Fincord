@@ -127,8 +127,8 @@ class AlphaNumericComparator : Comparator<String?> {
      * @param s2 the second string to be compared
      * @return If any of the given parameters is `null` or is an empty string like
      * `""`, `-1` or `1` will be returned based on the order:
-     * `-1` will be returned if the first parameter is `null` or empty,
-     * `1` will be returned if the second parameter is  `null` or empty.
+     * `1` will be returned if the first parameter is `null` or empty,
+     * `-1` will be returned if the second parameter is  `null` or empty.
      * When both are either `null` or empty or any combination of those, a
      * `0` will be returned.
      */
@@ -137,11 +137,11 @@ class AlphaNumericComparator : Comparator<String?> {
         var ss2 = s2
         if ((ss1 == null || ss1.trim()
                 .isEmpty()) && ss2 != null && ss2.trim().isNotEmpty()) {
-            return -1
+            return 1
         }
         if ((ss2 == null || ss2.trim()
                 .isEmpty()) && ss1 != null && ss1.trim().isNotEmpty()) {
-            return 1
+            return -1
         }
         if ((ss1 == null || ss1.trim()
                 .isEmpty()) && (ss2 == null || ss2.trim()

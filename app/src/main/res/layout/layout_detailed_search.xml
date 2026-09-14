@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/detailed_search_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:clickable="true"
+    android:focusable="true"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:background="@color/surfaceColor">
+
+    <include
+        android:id="@+id/search_bar_detail"
+        layout="@layout/layout_search_bar" />
+
+    <!-- Tab Navigation -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/tab_container"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        app:cardBackgroundColor="@color/tabContainerColor"
+        android:layout_marginStart="22dp"
+        android:layout_marginEnd="22dp"
+        android:layout_marginBottom="16dp"
+        android:padding="4dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="0dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="false">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="0dp">
+
+            <!-- Selected Tab Indicator -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/tab_apple_music_container"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:outlineAmbientShadowColor="@color/searchTabShadowAmbientColor"
+                android:outlineSpotShadowColor="@color/searchTabShadowColor"
+                app:cardBackgroundColor="@color/tabSelectedColor"
+                android:layout_margin="3dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="4dp"
+                app:cardPreventCornerOverlap="false"
+                app:cardUseCompatPadding="false" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="6dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tab_apple_music"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/search_source_jellyfin"
+                    android:textSize="13sp"
+                    android:textColor="@color/onSurfaceColor"
+                    android:fontFamily="@font/inter_semibold"
+                    android:includeFontPadding="false"
+                    android:gravity="center"
+                    android:paddingVertical="0dp" />
+
+                <TextView
+                    android:id="@+id/tab_library"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/search_source_lidarr"
+                    android:textSize="13sp"
+                    android:textColor="@color/onSurfaceColorInactive"
+                    android:fontFamily="@font/inter_semibold"
+                    android:includeFontPadding="false"
+                    android:gravity="center"
+                    android:paddingVertical="0dp" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="12dp" />
+
+    <LinearLayout
+        android:id="@+id/recently_searched_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/recently_searched_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/inter_semibold"
+            android:includeFontPadding="false"
+            android:text="@string/search_recently_searched"
+            android:textColor="@color/onSurfaceColor"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/recently_searched_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_semibold"
+            android:includeFontPadding="false"
+            android:text="@string/search_recently_searched_clear"
+            android:textColor="@color/accentColor"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/recently_searched_divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@color/bottomNavigationDividerColor" />
+
+
+    <!--
+        Content Area.
+
+        A frame rather than a column: the status block has to sit over the list and centre itself in
+        the whole area. Stacked vertically, the results list claimed every pixel and the message
+        below it was laid out with no height left, so it never appeared however it was toggled.
+    -->
+    <FrameLayout
+        android:id="@+id/content_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/surfaceColor">
+
+        <!--
+            Upstream leaves three hardcoded song rows here as a mock. Replaced with the list the
+            query actually fills.
+        -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_results"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false" />
+
+        <LinearLayout
+            android:id="@+id/search_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingHorizontal="40dp"
+            android:visibility="gone">
+
+            <!--
+                Shown while a search is in flight. Searching a downloader means several round trips
+                and sometimes a rate-limited metadata service on top, so a bare line of text left
+                the user with no way to tell "working" from "finished, nothing found".
+            -->
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/search_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp"
+                android:indeterminate="true"
+                android:visibility="gone"
+                app:indicatorColor="@color/accentColor"
+                app:indicatorInset="0dp"
+                app:indicatorSize="22dp"
+                app:trackThickness="2dp" />
+
+            <TextView
+                android:id="@+id/search_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_regular"
+                android:gravity="center"
+                android:lineSpacingExtra="3sp"
+                android:text="@string/search_no_results"
+                android:textColor="@color/onSurfaceColorInactive"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/search_status_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:fontFamily="@font/inter_semibold"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="8dp"
+                android:textColor="@color/accentColor"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</LinearLayout>

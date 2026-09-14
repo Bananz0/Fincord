@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <uk.akane.accord.ui.components.player.FullPlayer
+        android:id="@+id/full_player"
+        android:alpha="0"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <uk.akane.accord.ui.components.player.PreviewPlayer
+        android:id="@+id/preview_player"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/preview_player_height"
+        android:layout_marginHorizontal="@dimen/preview_player_horizontal_margin"
+        android:layout_marginBottom="@dimen/bottom_nav_height_raw"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_max="@dimen/preview_player_max_width"
+        />
+
+</merge>

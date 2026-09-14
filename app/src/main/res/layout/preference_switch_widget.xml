@@ -1,8 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Derived from https://github.com/androidx/androidx/blob/8cb282cc/preference/preference/res/layout/preference_widget_switch_compat.xml -->
-<com.google.android.material.materialswitch.MaterialSwitch xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!--
+    The toggle inside a preference row.
+
+    Deliberately the same SwitchCompat, with the same explicit attributes, as the accessory in
+    layout_settings_row.xml - the switch on Accord's own Settings page. Two reasons:
+
+    1. showText. One UI's platform switch style turns it on, and a bare switch inherits that: the
+       track and thumb went unpainted and the row showed a tiny "OFF" instead of a toggle. Blanking
+       textOn/textOff as well means an OEM that ignores showText still has nothing to draw.
+    2. The tints. These screens are inflated against Theme.Gramophone (Material 3) while the shell
+       around them is Material 2, so a theme-resolved toggle here would not match the one two taps
+       away on the Settings root. Naming the colours makes the host theme irrelevant.
+-->
+<androidx.appcompat.widget.SwitchCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/switchWidget"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@null"
     android:clickable="false"
-    android:focusable="false" />
+    android:focusable="false"
+    android:textOff=""
+    android:textOn=""
+    app:showText="false"
+    app:thumbTint="@color/cl_settings_switch_thumb"
+    app:trackTint="@color/cl_settings_switch_track"
+    app:trackTintMode="src_in" />

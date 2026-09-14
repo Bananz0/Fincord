@@ -20,29 +20,16 @@
 
     <PreferenceCategory
         android:layout="@layout/preference_category_md"
-        android:title="@string/settings_category_filters">
-
-        <SeekBarPreference
-            android:defaultValue="@integer/filter_default_sec"
-            android:key="mediastore_filter"
-            android:layout="@layout/preference_seekbar"
-            android:max="120"
-            android:title="@string/settings_mediastore_filter"
-            app:iconSpaceReserved="false"
-            app:showSeekBarValue="true" />
-
-        <Preference
-            android:key="blacklist"
-            android:layout="@layout/preference_basic"
-            android:summary="@string/settings_blacklist_folder_summary"
-            android:title="@string/settings_blacklist_folder"
-            app:iconSpaceReserved="false" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:layout="@layout/preference_category_md"
         android:title="@string/settings_category_misc">
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="sync_on_startup"
+            android:layout="@layout/preference_switch"
+            android:summary="@string/settings_sync_on_startup_summary"
+            android:title="@string/settings_sync_on_startup"
+            android:widgetLayout="@layout/preference_switch_widget"
+            app:iconSpaceReserved="false" />
 
         <SwitchPreferenceCompat
             android:defaultValue="false"
@@ -54,19 +41,19 @@
             app:iconSpaceReserved="false" />
 
         <SwitchPreferenceCompat
-            android:defaultValue="false"
-            android:key="trim_lyrics"
+            android:defaultValue="true"
+            android:key="finnect_enabled"
             android:layout="@layout/preference_switch"
-            android:title="@string/settings_trim_lyrics"
+            android:summary="@string/settings_finnect_summary"
+            android:title="@string/settings_finnect"
             android:widgetLayout="@layout/preference_switch_widget"
             app:iconSpaceReserved="false" />
 
         <SwitchPreferenceCompat
             android:defaultValue="false"
-            android:key="album_covers"
+            android:key="trim_lyrics"
             android:layout="@layout/preference_switch"
-            android:summary="@string/album_covers_compat_desc"
-            android:title="@string/album_covers_compat"
+            android:title="@string/settings_trim_lyrics"
             android:widgetLayout="@layout/preference_switch_widget"
             app:iconSpaceReserved="false" />
 

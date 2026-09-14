@@ -361,7 +361,7 @@ abstract class BaseOverlaySlider<
         inactiveTrackPaintUnder.setStyle(Style.STROKE);
         inactiveTrackPaintUnder.setColor(ContextCompat.getColor(
                 context,
-                org.akanework.gramophone.R.color.contrast_secondaryOverlayColor
+                uk.akane.accord.R.color.contrast_secondaryOverlayColor
         ));
 
         inactiveTrackPaint = new Paint();
@@ -372,7 +372,7 @@ abstract class BaseOverlaySlider<
         activeTrackPaintUnder.setStyle(Style.STROKE);
         activeTrackPaintUnder.setColor(ContextCompat.getColor(
                 context,
-                org.akanework.gramophone.R.color.contrast_primaryOverlayColor
+                uk.akane.accord.R.color.contrast_primaryOverlayColor
         ));
 
         activeTrackPaint = new Paint();

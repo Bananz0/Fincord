@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">协律</string>
     <string name="home_menu_search">搜索</string>
     <string name="home_menu_shuffle">随机</string>
     <string name="home_menu_settings">设置</string>
     <string name="home_menu_refresh">刷新</string>
     <string name="category_songs">歌曲</string>
     <string name="category_albums">专辑</string>
-    <string name="category_artists">艺术家</string>
-    <string name="category_genres">艺术流派</string>
+    <string name="category_artists">艺人</string>
+    <string name="category_genres">主题</string>
     <string name="category_playlists">播放列表</string>
     <string name="unknown_artist">未知艺术家</string>
-    <string name="category_dates">发行日期</string>
+    <string name="category_dates">日期</string>
     <string name="follow_system">跟随系统</string>
     <string name="dark">深色</string>
     <string name="light">浅色</string>
@@ -32,7 +31,7 @@
     <string name="go_to_album">专辑..</string>
     <string name="go_to_artist">艺术家..</string>
     <string name="details">详细</string>
-    <string name="shuffle">随机</string>
+    <string name="shuffle">随机播放</string>
     <string name="repeat_mode">循环模式</string>
     <string name="unknown_playlist">未知播放列表</string>
     <string name="settings_category_appearance">外观</string>
@@ -180,6 +179,7 @@
     <string name="daily_shuffle">每日电台</string>
     <string name="genre_shuffle">主题狂欢</string>
     <string name="recommendations">专属推荐</string>
+    <string name="home_recommendations_title">专属精选推荐</string>
     <string name="new_songs">每日新曲</string>
     <string name="recently_played">最近播放</string>
     <string name="main_developers">主要开发者</string>
@@ -188,4 +188,37 @@
     <string name="app_libraries">代码库</string>
     <string name="blur_lyrics">模糊歌词</string>
     <string name="blur_lyrics_summary">为歌词添加模糊（也许会增加性能消耗）</string>
+
+    <!-- ==== Ported from upstream Accord ==== -->
+    <string name="bottom_nav_search">搜索</string>
+    <string name="bottom_nav_library">资料库</string>
+    <string name="bottom_nav_browse">浏览</string>
+    <string name="bottom_nav_home">主页</string>
+    <string name="default_track">未在播放</string>
+    <string name="btn_continue">继续</string>
+    <string name="welcome_to">欢迎使用</string>
+    <string name="welcome_page_introduction">在安卓设备上无广告播放您的 Jellyfin 音乐库，下载音乐以供离线收听，并通过空间音频获得沉浸式体验。</string>
+    <string name="disclaimer">Fincord 是采用 GPL-3.0 许可证的自由软件。它只会连接您的 Jellyfin 服务器及您自行配置的服务，不会将数据发送到其他地方。</string>
+    <string name="check_source_code">可在设置中查看制作人员和许可证</string>
+    <string name="music">音乐</string>
+    <string name="Album">相册</string>
+    <string name="popup_view_credits">查看制作人员</string>
+    <string name="popup_delete_from_library">从资料库中删除</string>
+    <string name="popup_add_to_a_playlist">添加到播放列表…</string>
+    <string name="popup_share_song">分享歌曲…</string>
+    <string name="popup_share_lyrics">分享歌词…</string>
+    <string name="popup_go_to_album">前往专辑</string>
+    <string name="popup_create_station">创建电台</string>
+    <string name="popup_undo_favorite">撤销喜爱</string>
+    <string name="library_head_playlist">播放列表</string>
+    <string name="library_head_artist">艺人</string>
+    <string name="library_head_album">专辑</string>
+    <string name="library_head_song">歌曲</string>
+    <string name="library_head_genre">类型</string>
+    <string name="play">播放</string>
+    <string name="waves_at_max">声波满格</string>
+    <string name="explore_more">探索更多</string>
+    <string name="browse_by_name">按名称浏览</string>
+    <string name="no_tracks_available">无可用歌曲</string>
+    <string name="no_tracks_available_subtitle">Fincord 没有在库中发现歌曲。</string>
 </resources>
